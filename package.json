@@ -1,0 +1,9 @@
+{
+  "name": "schedule-assistant",
+  "version": "1.0.0",
+  "description": "Software Engineering Project",
+  "main": "index.js",
+  "repository": "https://github.com/charlietoro/schedule-assistant.git",
+  "author": "Team 3",
+  "license": "MIT"
+}
