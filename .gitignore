@@ -1,18 +1,11 @@
-
-# Created by https://www.gitignore.io/api/node,react
-# Edit at https://www.gitignore.io/?templates=node,react
-
-### Node ###
+# Created by .ignore support plugin (hsz.mobi)
+### Node template
 # Logs
-logs
+/logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
-
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Runtime data
 pids
@@ -25,12 +18,11 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
-*.lcov
 
 # nyc test coverage
 .nyc_output
 
-# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
+# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 
 # Bower dependency directory (https://bower.io/)
@@ -49,9 +41,6 @@ jspm_packages/
 # TypeScript v1 declaration files
 typings/
 
-# TypeScript cache
-*.tsbuildinfo
-
 # Optional npm cache directory
 .npm
 
@@ -69,7 +58,6 @@ typings/
 
 # dotenv environment variables file
 .env
-.env.test
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -80,45 +68,23 @@ typings/
 # nuxt.js build output
 .nuxt
 
-# rollup.js default build output
-dist/
-
-# Uncomment the public line if your project uses Gatsby
-# https://nextjs.org/blog/next-9-1#public-directory-support
-# https://create-react-app.dev/docs/using-the-public-folder/#docsNav
-# public
-
-# Storybook build outputs
-.out
-.storybook-out
+# Nuxt generate
+dist
 
 # vuepress build output
 .vuepress/dist
 
 # Serverless directories
-.serverless/
+.serverless
 
-# FuseBox cache
-.fusebox/
+# IDE / Editor
+.idea
 
-# DynamoDB Local files
-.dynamodb/
+# Service worker
+sw.*
 
-# Temporary folders
-tmp/
-temp/
+# macOS
+.DS_Store
 
-### react ###
-.DS_*
-**/*.backup.*
-**/*.back.*
-
-node_modules
-
-*.sublime*
-
-psd
-thumb
-sketch
-
-# End of https://www.gitignore.io/api/node,react
+# Vim swap files
+*.swp
