@@ -1,9 +1,14 @@
-import Header from '../layouts/header'
-import { Menu } from '../src/components/Menu';
-import "../src/styles/styles.css";
+import Main from '../layouts/Main';
+import { Menu } from '../components/Menu';
+import withData from '../plugins/apollo';
+import "../styles/styles.css";
 
-export default function Index () {
+export default withData ( (props: any) => {
     return (
-        <Menu/>
+        <div>
+            <Main>
+                <Menu/>
+            </Main>
+        </div>
     )
-}
+})
