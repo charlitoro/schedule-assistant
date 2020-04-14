@@ -43,11 +43,6 @@ button {
     background: transparent;
 }
 
-footer{
-    clear: both;
-    position: relative;
-}
-
 ul, li {
     margin: 0;
     padding: 0;

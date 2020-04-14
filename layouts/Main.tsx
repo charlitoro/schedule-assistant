@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Footer from './Footer';
 
 const Main = ({ children }: any) => {
     return (
@@ -13,7 +12,6 @@ const Main = ({ children }: any) => {
                 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
             </Head>
             { children }
-            <Footer/>
         </div>
     )
 }
