@@ -11,7 +11,9 @@ const Main = ({ children }: any) => {
                       crossOrigin="anonymous" />
                 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
             </Head>
-            { children }
+            <div className="page-container">
+                { children }
+            </div>
         </div>
     )
 }
