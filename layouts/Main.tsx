@@ -11,7 +11,7 @@ const Main = ({ children }: any) => {
                       crossOrigin="anonymous" />
                 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
             </Head>
-            <div className="page-container">
+            <div style={{display: "flex"}}>
                 { children }
             </div>
         </div>
