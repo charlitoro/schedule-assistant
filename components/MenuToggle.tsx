@@ -1,12 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import { mainListItems, secondaryListItems} from './MenuItem';
+import { Drawer, IconButton, Divider, List, ListSubheader, Icon } from '@material-ui/core';
+import { AcademicList } from './SubjectType';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -50,15 +46,22 @@ const MenuToggle = ({ handleClose, open}: any) => {
                 }}
                 open={open}
             >
+                {/* TODO: create user card here */}
                 <div className={classes.toolbarIcon}>
                     <IconButton onClick={handleClose}>
-                        <ChevronLeftIcon />
+                         <Icon>chevron_left</Icon>
                     </IconButton>
                 </div>
                 <Divider />
-                <List>{mainListItems}</List>
-                <Divider />
-                <List>{secondaryListItems}</List>
+                {/*TODO: Dynamic generation sections of list mapping data*/}
+                <ListSubheader inset>Academic</ListSubheader>
+                <List > <AcademicList listName="Curriculum" icon="subject"/> </List>
+                <List > <AcademicList listName="Elective" icon="assignment_turned_in"/> </List>
+                <List > <AcademicList listName="Humanistic" icon="people_icon"/> </List>
+                <List > <AcademicList listName="Language" icon="language"/> </List>
+
+                <ListSubheader inset>Personal</ListSubheader>
+                <List > <AcademicList listName="Custom"/> </List>
             </Drawer>
         </div>
     )

@@ -1,13 +1,7 @@
 import React from 'react'
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import Typography from '@material-ui/core/Typography';
-import Badge from '@material-ui/core/Badge';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import { AppBar, Toolbar, IconButton, Typography, Badge, Icon } from '@material-ui/core';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -53,14 +47,14 @@ const NavBar = ( { handleOpen, open }: any ) => {
                         onClick={handleOpen}
                         className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
                     >
-                        <MenuIcon />
+                        <Icon>menu</Icon>
                     </IconButton>
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                         Dashboard
                     </Typography>
                     <IconButton color="inherit">
                         <Badge badgeContent={4} color="secondary">
-                            <NotificationsIcon />
+                            <Icon>notifications</Icon>
                         </Badge>
                     </IconButton>
                 </Toolbar>
