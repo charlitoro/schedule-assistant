@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) =>
     createStyles({
         nested: {
             paddingLeft: theme.spacing(4),
-        },
+        }
     }),
 );
 
@@ -27,18 +27,18 @@ export const AcademicList = ( { listName, icon }: any ) => {
         <div>
             <ListItem button onClick={handleClick}>
                 <ListItemIcon>
-                    <Icon>{icon}</Icon>
+                    <Icon style={{ color:"#FFFFFF" }}>{icon}</Icon>
                 </ListItemIcon>
-                <ListItemText primary={listName} />
-                {open ? <Icon>expand_less</Icon> : <Icon>expand_more</Icon>}
+                <ListItemText primary={listName} style={{color: "#FFFFFF"}}/>
+                {open ? <Icon style={{color: "#FFFFFF"}}>expand_less</Icon> : <Icon style={{color: "#FFFFFF"}}>expand_more</Icon>}
             </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     <ListItem button className={classes.nested}>
                         <ListItemIcon>
-                            <Icon>star_border</Icon>
+                            <Icon style={{color: "#FFFFFF"}}>star_border</Icon>
                         </ListItemIcon>
-                        <ListItemText primary="Starred" />
+                        <ListItemText primary="Starred" style={{color: "#FFFFFF"}}/>
                     </ListItem>
                 </List>
             </Collapse>

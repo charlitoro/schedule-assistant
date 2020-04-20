@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme) => ({
     drawerPaper: {
         position: 'relative',
         whiteSpace: 'nowrap',
+        background: "#291745",
         width: drawerWidth,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
@@ -49,18 +50,18 @@ const MenuToggle = ({ handleClose, open}: any) => {
                 {/* TODO: create user card here */}
                 <div className={classes.toolbarIcon}>
                     <IconButton onClick={handleClose}>
-                         <Icon>chevron_left</Icon>
+                         <Icon style={{color:"#BDBDBD"}}>chevron_left</Icon>
                     </IconButton>
                 </div>
                 <Divider />
                 {/*TODO: Dynamic generation sections of list mapping data*/}
-                <ListSubheader inset>Academic</ListSubheader>
+                <ListSubheader inset style={{color:"#BDBDBD"}}>Academic</ListSubheader>
                 <List > <AcademicList listName="Curriculum" icon="subject"/> </List>
                 <List > <AcademicList listName="Elective" icon="assignment_turned_in"/> </List>
                 <List > <AcademicList listName="Humanistic" icon="people_icon"/> </List>
                 <List > <AcademicList listName="Language" icon="language"/> </List>
 
-                <ListSubheader inset>Personal</ListSubheader>
+                <ListSubheader inset style={{color:"#BDBDBD"}}>Personal</ListSubheader>
                 <List > <AcademicList listName="Custom"/> </List>
             </Drawer>
         </div>

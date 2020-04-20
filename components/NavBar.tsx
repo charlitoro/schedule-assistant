@@ -7,6 +7,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
+        background: "#411c7c",
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -50,13 +51,8 @@ const NavBar = ( { handleOpen, open }: any ) => {
                         <Icon>menu</Icon>
                     </IconButton>
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                        Dashboard
+                        Planner
                     </Typography>
-                    <IconButton color="inherit">
-                        <Badge badgeContent={4} color="secondary">
-                            <Icon>notifications</Icon>
-                        </Badge>
-                    </IconButton>
                 </Toolbar>
             </AppBar>
         </div>
