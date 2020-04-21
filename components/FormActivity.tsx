@@ -4,10 +4,11 @@ import {
     Container, Typography,
     Link, Grid, TextField,
     Chip, CssBaseline,
-     Button, IconButton,
+    Button, IconButton, Paper,
 } from "@material-ui/core";
 // @ts-ignore
 import ColorPicker from "material-ui-color-picker";
+import { AddCircle, Lens } from "@material-ui/icons";
 
 interface ChipData {
     key: number;
@@ -43,13 +44,18 @@ const useStyles = makeStyles((theme) => ({
     },
     chip: {
         margin: theme.spacing(0.5),
+    },
+    colorPaper: {
+        margin: theme.spacing(1),
+        width: 100,
+        height: 100,
     }
 }));
 
 const FromActivity = () => {
     const classes = useStyles();
 
-    const [chipData, setChipData] = React.useState<ChipData[]>([
+    const [chipData, setChipData] = React.useState<ChipData[]>( [
         { key: 0, label: 'Angular' },
         { key: 1, label: 'jQuery' },
         { key: 2, label: 'Polymer' },
@@ -57,9 +63,14 @@ const FromActivity = () => {
         { key: 4, label: 'Vue.js' },
     ]);
 
+    const [color, setColor] = React.useState( '#000');
+
     const handleDelete = (chipToDelete: ChipData) => () => {
         setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
     };
+    const handlerColor = ( color: any ) => {
+        setColor( color );
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -90,13 +101,17 @@ const FromActivity = () => {
                                 id="description"
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sm={8}>
                             <ColorPicker
                                 name='color'
-                                defaultValue='#000'
-                                // value={this.state.color} - for controlled component
-                                onChange={ ( color: any ) => console.log(color)}
+                                label='Activity Color'
+                                defaultValue={color}
+                                value={color}
+                                onChange={ (color: any) => handlerColor( color ) }
                             />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <Paper elevation={3} className={classes.colorPaper} style={{background: color}}/>
                         </Grid>
                         <Grid item xs={12}>
                             <div className={classes.chipContainer}>
@@ -113,7 +128,7 @@ const FromActivity = () => {
                                     );
                                 })}
                                 <IconButton color="secondary" aria-label="add schedule">
-                                    <AddCircle/>
+                                    <AddCircle fontSize="large"/>
                                 </IconButton>
                             </div>
                         </Grid>
@@ -129,9 +144,7 @@ const FromActivity = () => {
                     </Button>
                     <Grid container justify="flex-end">
                         <Grid item>
-                            <Link href="#" variant="body2">
-                                Already have an account? Sign in
-                            </Link>
+
                         </Grid>
                     </Grid>
                 </form>
