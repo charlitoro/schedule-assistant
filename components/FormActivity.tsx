@@ -1,14 +1,15 @@
 import React from 'react';
+import ScheduleForm from '../components/ScheduleForm';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Container, Typography,
-    Link, Grid, TextField,
+    Grid, TextField,
     Chip, CssBaseline,
-    Button, IconButton, Paper,
+    Button, IconButton, Paper, InputLabel, Modal, Fade, Backdrop,
 } from "@material-ui/core";
 // @ts-ignore
 import ColorPicker from "material-ui-color-picker";
-import { AddCircle, Lens } from "@material-ui/icons";
+import { AddCircle } from "@material-ui/icons";
 
 interface ChipData {
     key: number;
@@ -49,6 +50,17 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
         width: 100,
         height: 100,
+    },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    modalPaper: {
+        backgroundColor: theme.palette.background.paper,
+        border: '2px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
     }
 }));
 
@@ -56,21 +68,27 @@ const FromActivity = () => {
     const classes = useStyles();
 
     const [chipData, setChipData] = React.useState<ChipData[]>( [
-        { key: 0, label: 'Angular' },
-        { key: 1, label: 'jQuery' },
-        { key: 2, label: 'Polymer' },
-        { key: 3, label: 'React' },
-        { key: 4, label: 'Vue.js' },
+        { key: 0, label: '7-8 Lunes' },
+        { key: 1, label: '8-9 Lunes' },
+        { key: 2, label: '14-15 Viernes' },
+        { key: 3, label: '15-16 Viernes' },
     ]);
 
     const [color, setColor] = React.useState( '#000');
-
     const handleDelete = (chipToDelete: ChipData) => () => {
         setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
     };
     const handlerColor = ( color: any ) => {
         setColor( color );
     }
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -114,6 +132,7 @@ const FromActivity = () => {
                             <Paper elevation={3} className={classes.colorPaper} style={{background: color}}/>
                         </Grid>
                         <Grid item xs={12}>
+                            <InputLabel >Schedules</InputLabel>
                             <div className={classes.chipContainer}>
                                 {chipData.map((data) => {
                                     return (
@@ -127,9 +146,27 @@ const FromActivity = () => {
                                         </li>
                                     );
                                 })}
-                                <IconButton color="secondary" aria-label="add schedule">
+                                <IconButton color="secondary" aria-label="add schedule" onClick={handleOpen}>
                                     <AddCircle fontSize="large"/>
                                 </IconButton>
+                                <Modal
+                                    aria-labelledby="transition-modal-title"
+                                    aria-describedby="transition-modal-description"
+                                    className={classes.modal}
+                                    open={open}
+                                    onClose={handleClose}
+                                    closeAfterTransition
+                                    BackdropComponent={Backdrop}
+                                    BackdropProps={{
+                                        timeout: 500,
+                                    }}
+                                >
+                                    <Fade in={open}>
+                                        <div className={classes.modalPaper}>
+                                            <ScheduleForm/>
+                                        </div>
+                                    </Fade>
+                                </Modal>
                             </div>
                         </Grid>
                     </Grid>
@@ -142,11 +179,6 @@ const FromActivity = () => {
                     >
                         Accept
                     </Button>
-                    <Grid container justify="flex-end">
-                        <Grid item>
-
-                        </Grid>
-                    </Grid>
                 </form>
             </div>
         </Container>

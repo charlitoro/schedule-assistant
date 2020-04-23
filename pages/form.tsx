@@ -1,8 +1,11 @@
 import FormActivity from '../components/FormActivity';
+import Main from "../layouts/Main";
 
 export default () => {
     return (
-        <FormActivity/>
+        <Main>
+            <FormActivity/>
+        </Main>
     )
 }
 
