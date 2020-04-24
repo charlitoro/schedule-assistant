@@ -8,6 +8,7 @@ import { KeyboardTimePicker, MuiPickersUtilsProvider } from '@material-ui/picker
 const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(8),
+        width: 300,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -42,74 +43,71 @@ const ScheduleForm = () => {
         setAge(event.target.value as string);
     };
     return (
-        <Container component="main" maxWidth='xs'>
-            <CssBaseline />
-            <div className={classes.paper}>
-                <Icon style={{fontSize: 80}} color="secondary">schedule</Icon>
-                <form className={classes.form} noValidate>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={12}>
-                            <FormControl variant="outlined" className={classes.formControl}>
-                                <Select
-                                    labelId="select-day"
-                                    value={age}
-                                    onChange={handleChange}
-                                    label="Dia"
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    <MenuItem value={10}>Lunes</MenuItem>
-                                    <MenuItem value={20}>Martes</MenuItem>
-                                    <MenuItem value={30}>Miércoles</MenuItem>
-                                    <MenuItem value={40}>Jueves</MenuItem>
-                                    <MenuItem value={50}>Viernes</MenuItem>
-                                    <MenuItem value={60}>Sabado</MenuItem>
-                                    <MenuItem value={70}>Domingo</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <KeyboardTimePicker
-                                    margin="normal"
-                                    id="initial-time"
-                                    label="Inicia"
-                                    value={selectedDate}
-                                    onChange={handleDateChange}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change time',
-                                    }}
-                                />
-                            </MuiPickersUtilsProvider>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <KeyboardTimePicker
-                                    margin="normal"
-                                    id="initial-time"
-                                    label="Finaliza"
-                                    value={selectedDate}
-                                    onChange={handleDateChange}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change time',
-                                    }}
-                                />
-                            </MuiPickersUtilsProvider>
-                        </Grid>
+        <div className={classes.paper}>
+            <Icon style={{fontSize: 80}} color="secondary">schedule</Icon>
+            <form className={classes.form} noValidate>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <FormControl variant="outlined" className={classes.formControl}>
+                            <Select
+                                labelId="select-day"
+                                value={age}
+                                onChange={handleChange}
+                                label="Dia"
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                <MenuItem value={10}>Lunes</MenuItem>
+                                <MenuItem value={20}>Martes</MenuItem>
+                                <MenuItem value={30}>Miércoles</MenuItem>
+                                <MenuItem value={40}>Jueves</MenuItem>
+                                <MenuItem value={50}>Viernes</MenuItem>
+                                <MenuItem value={60}>Sabado</MenuItem>
+                                <MenuItem value={70}>Domingo</MenuItem>
+                            </Select>
+                        </FormControl>
                     </Grid>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >
-                        Adicionar
-                    </Button>
-                </form>
-            </div>
-        </Container>
+                    <Grid item xs={12} sm={6}>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <KeyboardTimePicker
+                                margin="normal"
+                                id="initial-time"
+                                label="Inicia"
+                                value={selectedDate}
+                                onChange={handleDateChange}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change time',
+                                }}
+                            />
+                        </MuiPickersUtilsProvider>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <KeyboardTimePicker
+                                margin="normal"
+                                id="initial-time"
+                                label="Finaliza"
+                                value={selectedDate}
+                                onChange={handleDateChange}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change time',
+                                }}
+                            />
+                        </MuiPickersUtilsProvider>
+                    </Grid>
+                </Grid>
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                >
+                    Adicionar
+                </Button>
+            </form>
+        </div>
     );
 }
 

@@ -1,4 +1,21 @@
 import Head from 'next/head';
+import {ThemeProvider} from "@material-ui/styles";
+import {createMuiTheme} from "@material-ui/core";
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            light: '#9c4dcc',
+            main: "#6a1b9a",
+            dark: '#38006b',
+        },
+        secondary: {
+            light:'#9cff57',
+            main: '#64dd17',
+            dark: '#1faa00'
+        },
+    },
+});
 
 const Main = ({ children }: any) => {
     return (
@@ -12,7 +29,9 @@ const Main = ({ children }: any) => {
                 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
             </Head>
             <div style={{display: "flex"}}>
-                { children }
+                <ThemeProvider theme={theme}>
+                    { children }
+                </ThemeProvider>
             </div>
         </div>
     )
