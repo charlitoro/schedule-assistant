@@ -11,8 +11,8 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         margin: {
             position: 'absolute',
-            bottom: theme.spacing(8),
-            right: theme.spacing(8),
+            bottom: theme.spacing(4),
+            right: theme.spacing(4),
         },
         modal: {
             display: 'flex',
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         appBarSpacer: theme.mixins.toolbar,
         container: {
-            paddingTop: theme.spacing(10),
+            paddingTop: theme.spacing(11),
             paddingBottom: theme.spacing(4),
         },
     }),
