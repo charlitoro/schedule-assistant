@@ -31,7 +31,7 @@ const Planner = () => {
                                 {
                                     hours.map((day) => {
                                         return (
-                                            <Grid item xs key={day}>
+                                            <Grid item xs={12} key={day}>
                                                 <Paper className={classes.paper}>
                                                     {day}
                                                 </Paper>

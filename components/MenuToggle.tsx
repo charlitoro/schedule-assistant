@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { Drawer, IconButton, Divider, List, ListSubheader, Icon } from '@material-ui/core';
 import { AcademicList } from './SubjectType';
+import UserCard from './UserCard';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -53,16 +54,15 @@ const MenuToggle = ({ handleClose, open}: any) => {
                          <Icon style={{color:"#BDBDBD"}}>chevron_left</Icon>
                     </IconButton>
                 </div>
+                <List>
+                    <UserCard user={{name:"Jose", program: "Ing Sistemas", semester: 9}}/>
+                </List>
                 <Divider />
-                {/*TODO: Dynamic generation sections of list mapping data*/}
-                <ListSubheader inset style={{color:"#BDBDBD"}}>Academic</ListSubheader>
                 <List > <AcademicList listName="Curriculum" icon="subject"/> </List>
                 <List > <AcademicList listName="Elective" icon="assignment_turned_in"/> </List>
                 <List > <AcademicList listName="Humanistic" icon="people_icon"/> </List>
                 <List > <AcademicList listName="Language" icon="language"/> </List>
-
-                <ListSubheader inset style={{color:"#BDBDBD"}}>Personal</ListSubheader>
-                <List > <AcademicList listName="Custom"/> </List>
+                <List > <AcademicList listName="Custom" icon="event_available"/> </List>
             </Drawer>
         </div>
     )
