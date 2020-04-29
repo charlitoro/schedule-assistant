@@ -4,6 +4,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Drawer, IconButton, Divider, List, ListSubheader, Icon } from '@material-ui/core';
 import { AcademicList } from './SubjectType';
 import UserCard from './UserCard';
+import { ENUM_SUBJECT_TYPE } from '../utils/constants';
+import { filterSubjectsByType } from '../utils/filterSubjects';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -37,8 +39,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const MenuToggle = ({ handleClose, open}: any) => {
+const MenuToggle = ({ handleClose, open, studentData}: any) => {
     const classes = useStyles();
+    const filteredItems = filterSubjectsByType(studentData);
     return (
         <div>
             <Drawer
@@ -55,14 +58,17 @@ const MenuToggle = ({ handleClose, open}: any) => {
                     </IconButton>
                 </div>
                 <List>
-                    <UserCard user={{name:"Jose", program: "Ing Sistemas", semester: 9}}/>
+                    <UserCard user={{name: studentData.name, program: studentData.program.name, semester: studentData.semester}}/>
                 </List>
                 <Divider />
-                <List > <AcademicList listName="Curriculum" icon="subject"/> </List>
-                <List > <AcademicList listName="Elective" icon="assignment_turned_in"/> </List>
-                <List > <AcademicList listName="Humanistic" icon="people_icon"/> </List>
-                <List > <AcademicList listName="Language" icon="language"/> </List>
-                <List > <AcademicList listName="Custom" icon="event_available"/> </List>
+                {
+                    ENUM_SUBJECT_TYPE.map((type) => {
+                        return (
+                            <List key={type.name}> <AcademicList listName={type.name} icon={type.icon}  /> </List>
+                        )
+                    })
+                }
+                <List > <AcademicList listName="Activities" icon="event_available"/> </List>
             </Drawer>
         </div>
     )
