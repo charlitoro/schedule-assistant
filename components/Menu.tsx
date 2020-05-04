@@ -1,7 +1,6 @@
 import * as React from "react";
 import MenuToggle from "./MenuToggle";
 import NavBar from "./NavBar";
-import { filterSubjectsByType } from '../utils/filterSubjects';
 
 export const Menu = ({studentData}: any) => {
 

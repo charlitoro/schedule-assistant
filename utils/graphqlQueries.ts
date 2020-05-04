@@ -15,6 +15,12 @@ export const queryGetUser = gql`
                 code name
                 subjects{
                     code semester type name color
+                    groups {
+                        id name type
+                        teacher { code name }
+                        classroom{ code name }
+                        schedules{ start end day label }
+                    }
                 }
             }
             planner{
@@ -26,16 +32,16 @@ export const queryGetUser = gql`
                     }
                 }
                 groups{
-                    name type 
-                    teacher{ name }
-                    classroom{ name } 
+                    name type
+                    teacher{ code name }
+                    classroom{ code name }
                     schedules{
                         start end day label
                     }
                 }
             }
             activities{
-                name description color
+                id name description color
                 schedules{
                     start end day label
                 }

@@ -5,6 +5,7 @@ import {
     Collapse, List,
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { map } from 'lodash';
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -14,7 +15,8 @@ const useStyles = makeStyles((theme) =>
     }),
 );
 
-export const AcademicList = ( { listName, icon }: any ) => {
+export const AcademicList = ( { listName, icon, activities }: any ) => {
+    // console.log( activities );
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(true);
@@ -34,12 +36,18 @@ export const AcademicList = ( { listName, icon }: any ) => {
             </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                    <ListItem button className={classes.nested}>
-                        <ListItemIcon>
-                            <Icon style={{color: "#FFFFFF"}}>star_border</Icon>
-                        </ListItemIcon>
-                        <ListItemText primary="Starred" style={{color: "#FFFFFF"}}/>
-                    </ListItem>
+                    {
+                        map( activities, (subject: any ) => {
+                            return (
+                                <ListItem button dense className={classes.nested} key={subject.code ? subject.code : subject.id}>
+                                    <ListItemIcon>
+                                        <Icon style={{color: subject.color, }}>lens</Icon>
+                                    </ListItemIcon>
+                                    <ListItemText primary={subject.name} style={{color: "#FFFFFF"}}/>
+                                </ListItem>
+                            )
+                        } )
+                    }
                 </List>
             </Collapse>
         </div>
