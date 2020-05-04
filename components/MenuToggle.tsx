@@ -2,12 +2,13 @@ import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { Drawer, IconButton, Divider, List, ListSubheader, Icon } from '@material-ui/core';
-import { AcademicList } from './SubjectType';
+import { SubjectItem } from './SubjectType';
 import UserCard from './UserCard';
 import { concat, map, forEach, find, isEmpty } from 'lodash';
 import { ENUM_SUBJECT_TYPE } from '../utils/constants';
 import { filterSubjectsByType } from '../utils/filterSubjects';
 import {act} from "react-dom/test-utils";
+import ActivityItem from "./ActivityItem";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -52,7 +53,6 @@ const MenuToggle = ({ handleClose, open, studentData}: any) => {
             }}
             open={open}
         >
-            {/* TODO: create user card here */}
             <div className={classes.toolbarIcon}>
                 <IconButton onClick={handleClose}>
                      <Icon style={{color:"#BDBDBD"}}>chevron_left</Icon>
@@ -66,15 +66,16 @@ const MenuToggle = ({ handleClose, open, studentData}: any) => {
                 map( filteredItems.subjects, (subjectsType: any, key)  => {
                     const type: any = find(ENUM_SUBJECT_TYPE, (type) => type.name == key);
                     return (
-                        <List key={key}> <AcademicList listName={key} icon={type.icon} activities={subjectsType} /> </List>
+                        <List key={key}> <SubjectItem listName={key} icon={type.icon} subjects={subjectsType} /> </List>
                     )
                 } )
             }
             {
                 map( filteredItems, ( activities, key )  => {
                     if ( key === 'activities' && !isEmpty( activities ) ) {
-                        console.log( activities );
-                        return <List key="Custom"> <AcademicList listName="Activities" icon="event_available" activities={activities}/> </List>
+                        return (
+                            <List key="Custom"> <ActivityItem activities={activities}/> </List>
+                        )
                     }
                 } )
             }
