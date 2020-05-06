@@ -10,11 +10,7 @@ import {
 // @ts-ignore
 import ColorPicker from "material-ui-color-picker";
 import { AddCircle } from "@material-ui/icons";
-
-interface ChipData {
-    key: number;
-    label: string;
-}
+import { map } from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -69,13 +65,12 @@ const useStyles = makeStyles((theme) => ({
 const FromActivity = ( { user }: any ) => {
     const classes = useStyles();
 
-    const [chipData, setChipData] = React.useState([]);
     const [color, setColor] = React.useState( '#000');
     const [schedules, setNewSchedules] = React.useState<any[]>([]);
     const [loading, setLoading] = React.useState(false);
 
-    const handleDelete = (chipToDelete: ChipData) => () => {
-        setChipData((chips) => chips.filter((chip: any) => chip.key !== chipToDelete.key));
+    const handleDelete = (scheduleToDelete: any) => () => {
+        setNewSchedules((schedules) => schedules.filter((schedule: any) => schedule.id !== scheduleToDelete.id));
     };
     const handlerColor = ( color: any ) => {
         setColor( color );
@@ -146,12 +141,12 @@ const FromActivity = ( { user }: any ) => {
                         <Grid item xs={12}>
                             <InputLabel >Schedules</InputLabel>
                             <div className={classes.chipContainer}>
-                                {chipData.map((data: any) => {
+                                {map( schedules, (schedule: any) => {
                                     return (
-                                        <li key={data.key}>
+                                        <li key={schedule.id}>
                                             <Chip
-                                                label={data.label}
-                                                onDelete={handleDelete(data)}
+                                                label={schedule.label}
+                                                onDelete={handleDelete(schedule)}
                                                 className={classes.chip}
                                                 color="primary"
                                             />
