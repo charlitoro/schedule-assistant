@@ -17,7 +17,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import FormActivity from "../components/FormActivity";
 import Planner from '../components/Planner';
 import React from "react";
-import {useQuery} from "@apollo/react-hooks";
+import { executeQuery } from '../utils/graphqlQueryRequest';
 import { queryGetUser, queryGetSubjects } from '../utils/graphqlQueries';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -61,14 +61,7 @@ export default withData ( (props: any) => {
         setOpen(false);
     };
 
-    const getData = (query: any, variables: any) => {
-        return useQuery(query, {
-            variables,
-            notifyOnNetworkStatusChange: true
-        });
-    }
-
-    const { data } = getData(queryGetUser, { code: "216013478" });
+    const { data } = executeQuery(queryGetUser, { code: "216013478" });
 
     if( data && data.student ){
         return (
@@ -97,7 +90,7 @@ export default withData ( (props: any) => {
                             >
                                 <Fade in={open}>
                                     <div className={classes.modalPaper}>
-                                        <FormActivity/>
+                                        <FormActivity user={ data.student }/>
                                     </div>
                                 </Fade>
                             </Modal>

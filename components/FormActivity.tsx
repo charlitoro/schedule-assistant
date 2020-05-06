@@ -5,7 +5,7 @@ import {
     Container, Typography,
     Grid, TextField,
     Chip, CssBaseline,
-    Button, IconButton, Paper, InputLabel, Modal, Fade, Backdrop,
+    Button, IconButton, Paper, InputLabel, Modal, Fade, Backdrop, CircularProgress,
 } from "@material-ui/core";
 // @ts-ignore
 import ColorPicker from "material-ui-color-picker";
@@ -60,22 +60,22 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
+    },
+    loader: {
+        padding: theme.spacing(8, 4, 3),
     }
 }));
 
-const FromActivity = () => {
+const FromActivity = ( { user }: any ) => {
     const classes = useStyles();
 
-    const [chipData, setChipData] = React.useState<ChipData[]>( [
-        { key: 0, label: '7-8 Lunes' },
-        { key: 1, label: '8-9 Lunes' },
-        { key: 2, label: '14-15 Viernes' },
-        { key: 3, label: '15-16 Viernes' },
-    ]);
-
+    const [chipData, setChipData] = React.useState([]);
     const [color, setColor] = React.useState( '#000');
+    const [schedules, setNewSchedules] = React.useState<any[]>([]);
+    const [loading, setLoading] = React.useState(false);
+
     const handleDelete = (chipToDelete: ChipData) => () => {
-        setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
+        setChipData((chips) => chips.filter((chip: any) => chip.key !== chipToDelete.key));
     };
     const handlerColor = ( color: any ) => {
         setColor( color );
@@ -88,6 +88,19 @@ const FromActivity = () => {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const handleOpenLoading = () => {
+        setLoading( true );
+    }
+
+    const handleAddSchedule = ( schedule: any ) => {
+        const newSubjects = [...schedules];
+        if ( schedule ) {
+            newSubjects.push( schedule );
+        }
+        setLoading(false);
+        setNewSchedules(newSubjects)
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -133,7 +146,7 @@ const FromActivity = () => {
                         <Grid item xs={12}>
                             <InputLabel >Schedules</InputLabel>
                             <div className={classes.chipContainer}>
-                                {chipData.map((data) => {
+                                {chipData.map((data: any) => {
                                     return (
                                         <li key={data.key}>
                                             <Chip
@@ -162,7 +175,35 @@ const FromActivity = () => {
                                 >
                                     <Fade in={open}>
                                         <div className={classes.modalPaper}>
-                                            <ScheduleForm/>
+                                            <ScheduleForm
+                                                handleClose={() => handleClose()}
+                                                handleOpenLoader={() => handleOpenLoading()}
+                                                handleAddSchedule={(schedule: any) => handleAddSchedule( schedule )}
+                                            />
+                                        </div>
+                                    </Fade>
+                                </Modal>
+                                <Modal
+                                    aria-labelledby="loading-title"
+                                    aria-describedby="loading-description"
+                                    className={classes.modal}
+                                    open={loading}
+                                    // onClose={handleClose}
+                                    closeAfterTransition
+                                    BackdropComponent={Backdrop}
+                                    BackdropProps={{
+                                        timeout: 500,
+                                    }}
+                                >
+                                    <Fade
+                                        in={loading}
+                                        style={{
+                                            transitionDelay: loading ? '800ms' : '0ms',
+                                        }}
+                                        unmountOnExit
+                                    >
+                                        <div className={classes.loader}>
+                                            <CircularProgress color="secondary" size="5rem"/>
                                         </div>
                                     </Fade>
                                 </Modal>

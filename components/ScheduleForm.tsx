@@ -1,9 +1,16 @@
 import React from "react";
-import {Button, Container, CssBaseline, FormControl, Grid, Icon, InputLabel, MenuItem, Select} from "@material-ui/core";
+import {Button, Snackbar, FormControl, Grid, Icon, MenuItem, Select} from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { KeyboardTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { ENUM_DAYS } from '../utils/constants';
+import { map, indexOf, get } from 'lodash';
+import Moment from 'moment';
+import { mutationCreateSchedule } from '../utils/graphqlQueries';
+import MuiAlert, {AlertProps} from "@material-ui/lab/Alert";
+import {useMutation} from "@apollo/react-hooks";
+
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -26,22 +33,65 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ScheduleForm = () => {
+function Alert(props: AlertProps) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
-    const [selectedDate, setSelectedDate] = React.useState<Date | null>(
-        new Date('2014-08-18T21:11:54'),
-    );
-
-    const handleDateChange = (date: Date | null) => {
-        setSelectedDate(date);
-    };
+const ScheduleForm = ( { handleClose, handleOpenLoader, handleAddSchedule }: any ) => {
 
     const classes = useStyles();
-    const [age, setAge] = React.useState('');
+    const [startTime, setSelectedStartTime] = React.useState<Date | null>( new Date());
+    const [endTime, setSelectedEndTime] = React.useState<Date | null>( new Date() );
+    const [selectDay, setDay] = React.useState('');
+    const [open, setOpenAlert] = React.useState(false);
+    const [message, setMessage] = React.useState('');
 
-    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setAge(event.target.value as string);
+    const [ createSchedule ] = useMutation(mutationCreateSchedule)
+
+    const handleStartTimeChange = (time: Date | null) => {
+        setSelectedStartTime(time);
     };
+    const handleEndTimeChange = (time: Date | null) => {
+        setSelectedEndTime(time);
+    };
+
+    const handleDayChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        setDay(event.target.value as string);
+    };
+
+    const handleClickAlert = (message: string) => {
+        setOpenAlert(true);
+        setMessage(message)
+    };
+
+    const handleCloseAlert = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenAlert(false);
+    };
+
+    const submitAddSchedule = async () => {
+        if ( indexOf( ENUM_DAYS, selectDay) !== -1 ) {
+            if ( Moment(endTime).isAfter(startTime) ) {
+                const variables = {
+                    start: Moment(startTime).format('kk:mm'),
+                    end: Moment(endTime).format('kk:mm'),
+                    day: selectDay,
+                    label: `${selectDay} ${Moment(startTime).format('kk')}-${Moment(endTime).format('kk')}`
+                }
+                handleClose(); handleOpenLoader();
+                const { data } = await createSchedule({variables})
+                console.log( 'Res: ', data.createSchedule );
+                handleAddSchedule(get(data, 'createSchedule'));
+            } else {
+                handleClickAlert('La hora de finalización de la actividad debe ser mayor a la hora inicial.');
+            }
+        } else {
+            handleClickAlert('Seleccione el dia del horario, es un campo requerido para el Planner.');
+        }
+    }
+
     return (
         <div className={classes.paper}>
             <Icon style={{fontSize: 80}} color="secondary">schedule</Icon>
@@ -51,20 +101,18 @@ const ScheduleForm = () => {
                         <FormControl variant="outlined" className={classes.formControl}>
                             <Select
                                 labelId="select-day"
-                                value={age}
-                                onChange={handleChange}
+                                value={selectDay}
+                                onChange={handleDayChange}
                                 label="Dia"
                             >
                                 <MenuItem value="">
                                     <em>None</em>
                                 </MenuItem>
-                                <MenuItem value={10}>Lunes</MenuItem>
-                                <MenuItem value={20}>Martes</MenuItem>
-                                <MenuItem value={30}>Miércoles</MenuItem>
-                                <MenuItem value={40}>Jueves</MenuItem>
-                                <MenuItem value={50}>Viernes</MenuItem>
-                                <MenuItem value={60}>Sabado</MenuItem>
-                                <MenuItem value={70}>Domingo</MenuItem>
+                                {
+                                    map( ENUM_DAYS, ( day) => {
+                                        return <MenuItem key={day} value={day}> {day} </MenuItem>
+                                    } )
+                                }
                             </Select>
                         </FormControl>
                     </Grid>
@@ -74,8 +122,8 @@ const ScheduleForm = () => {
                                 margin="normal"
                                 id="initial-time"
                                 label="Inicia"
-                                value={selectedDate}
-                                onChange={handleDateChange}
+                                value={startTime}
+                                onChange={handleStartTimeChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change time',
                                 }}
@@ -88,8 +136,8 @@ const ScheduleForm = () => {
                                 margin="normal"
                                 id="initial-time"
                                 label="Finaliza"
-                                value={selectedDate}
-                                onChange={handleDateChange}
+                                value={endTime}
+                                onChange={handleEndTimeChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change time',
                                 }}
@@ -98,7 +146,7 @@ const ScheduleForm = () => {
                     </Grid>
                 </Grid>
                 <Button
-                    type="submit"
+                    onClick={submitAddSchedule}
                     fullWidth
                     variant="contained"
                     color="primary"
@@ -107,6 +155,12 @@ const ScheduleForm = () => {
                     Adicionar
                 </Button>
             </form>
+
+            <Snackbar open={open} autoHideDuration={4000} onClose={handleCloseAlert}>
+                <Alert onClose={handleCloseAlert} severity="error">
+                    {message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }

@@ -57,3 +57,15 @@ export const queryGetSubjects = gql`
         }
     }
 `;
+
+export const mutationCreateSchedule = gql`
+    mutation createSchedule(
+        $start: String! $end: String! $day: Days! $label: String
+    ) {
+        createSchedule(data: {
+            start:$start end:$end day:$day label:$label
+        }) {
+            id start end day label
+        }
+    }
+`;

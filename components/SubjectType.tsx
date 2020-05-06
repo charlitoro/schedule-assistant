@@ -6,7 +6,6 @@ import {
 } from '@material-ui/core';
 import { map } from 'lodash';
 import GroupItem from './GroupItem';
-import {createStyles, makeStyles} from "@material-ui/core/styles";
 
 export const SubjectItem = ( { listName, icon, subjects }: any ) => {
     const [open, setOpen] = React.useState(true);

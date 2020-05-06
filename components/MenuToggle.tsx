@@ -1,13 +1,12 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { Drawer, IconButton, Divider, List, ListSubheader, Icon } from '@material-ui/core';
+import { Drawer, IconButton, Divider, List, Icon } from '@material-ui/core';
 import { SubjectItem } from './SubjectType';
 import UserCard from './UserCard';
-import { concat, map, forEach, find, isEmpty } from 'lodash';
+import { map, find, isEmpty } from 'lodash';
 import { ENUM_SUBJECT_TYPE } from '../utils/constants';
 import { filterSubjectsByType } from '../utils/filterSubjects';
-import {act} from "react-dom/test-utils";
 import ActivityItem from "./ActivityItem";
 
 const drawerWidth = 240;
