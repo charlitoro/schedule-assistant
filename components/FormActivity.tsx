@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const FromActivity = ( { handleActivityClose, handleActivityOpenLoading, handleCreateActivity }: any ) => {
+const FromActivity = ( { handleActivityClose, handleActivityOpenLoading, handleCreateActivity, user }: any ) => {
     const classes = useStyles();
 
     const [color, setColor] = React.useState( '#000');
@@ -99,7 +99,8 @@ const FromActivity = ( { handleActivityClose, handleActivityOpenLoading, handleC
             const variables = { description, color, name }
             handleActivityClose(); handleActivityOpenLoading()
             const { data } = await createActivity({ variables });
-            handleCreateActivity( get(data, 'createActivity') );
+            console.log( get(data, 'createActivity') )
+            await handleCreateActivity( get(data, 'createActivity') );
         } else {
             // TODO: Mostrar Notificacion
             console.log('Valores nopueden ser vacios');

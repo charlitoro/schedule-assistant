@@ -18,7 +18,10 @@ import FormActivity from "../components/FormActivity";
 import Planner from '../components/Planner';
 import React from "react";
 import { executeQuery } from '../utils/graphqlQueryRequest';
-import { queryGetUser, queryGetSubjects } from '../utils/graphqlQueries';
+import {queryGetUser, queryGetSubjects, mutationUpdateActivityStudent} from '../utils/graphqlQueries';
+import {IActivity, IStudent} from "../utils/interfaces";
+import {useMutation} from "@apollo/react-hooks";
+import { get } from 'lodash';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -53,13 +56,18 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+const initStudentData = (): IStudent => {
+    const { data } = executeQuery(queryGetUser, { id: "5ea4b8f49b7965000851cdbc" });
+    return get(data, 'student')
+}
+
 export default withData ( (props: any) => {
     const classes = useStyles();
-
     const [loading, setLoading] = React.useState(false);
-    const [activities, setActivity] = React.useState<any[]>( []);
-    const [subjects, setSubject] = React.useState<any[]>( []);
+    const [studentData, setStudentData] = React.useState<IStudent>( initStudentData());
     const [open, setOpen] = React.useState(false);
+
+    const [ updateActivityStudent ] = useMutation( mutationUpdateActivityStudent );
 
     const handleOpenLoading = () => {
         setLoading( true );
@@ -72,22 +80,23 @@ export default withData ( (props: any) => {
         setOpen(false);
     };
 
-    const handleCreateActivity = ( activity: any ) => {
-        const newActivities = [...activities];
+    const handleCreateActivity = async ( activity: IActivity ) => {
         if ( activity ) {
-            newActivities.push( activity );
+            const { data } = await updateActivityStudent( {
+                variables: { idStudent: studentData.id, idActivity: activity.id }
+            } );
+            console.log( get(data, 'updateStudent') )
+            setStudentData(get(data, 'updateStudent'));
+            setLoading( false );
         }
-        setLoading( false );
-        setActivity( newActivities );
     }
 
-    const { data } = executeQuery(queryGetUser, { code: "216013478" });
-
-    if( data && data.student ){
+    if( studentData ){
+        // setStudentData(data.student);
         return (
             <div>
                 <Main>
-                    <Menu studentData={ data.student } />
+                    <Menu studentData={ studentData } />
                     <Fab color="secondary" aria-label="add" className={classes.margin} onClick={handleOpen}>
                         <Icon>add</Icon>
                     </Fab>
@@ -113,7 +122,8 @@ export default withData ( (props: any) => {
                                         <FormActivity
                                             handleActivityClose={() => handleClose()}
                                             handleActivityOpenLoading={() => handleOpenLoading()}
-                                            handleCreateActivity={(activity: any) => handleCreateActivity(activity)}
+                                            handleCreateActivity={(activity: IActivity) => handleCreateActivity(activity)}
+                                            user={studentData}
                                         />
                                     </div>
                                 </Fade>

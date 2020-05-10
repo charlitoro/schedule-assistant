@@ -8,45 +8,49 @@ export const queryGetTeachers = gql`
         }
     }
 `
+const studentData = `
+    id code name semester
+    program{
+        code name
+        subjects{
+            code semester type name color
+            groups {
+                id name type
+                teacher { code name }
+                classroom{ code name }
+                schedules{ start end day label }
+            }
+        }
+    }
+    planner{
+        id name description
+        activities{
+            id description
+            schedules{
+                start end day label
+            }
+        }
+        groups{
+            name type
+            teacher{ code name }
+            classroom{ code name }
+            schedules{
+                start end day label
+            }
+        }
+    }
+    activities{
+        id name description color
+        schedules{
+            start end day label
+        }
+    }
+`
+
 export const queryGetUser = gql`
-    query getUserByCode($code: String!){
-        student(where:{code:$code}){
-            code name semester
-            program{
-                code name
-                subjects{
-                    code semester type name color
-                    groups {
-                        id name type
-                        teacher { code name }
-                        classroom{ code name }
-                        schedules{ start end day label }
-                    }
-                }
-            }
-            planner{
-                id name description
-                activities{
-                    id description
-                    schedules{
-                        start end day label
-                    }
-                }
-                groups{
-                    name type
-                    teacher{ code name }
-                    classroom{ code name }
-                    schedules{
-                        start end day label
-                    }
-                }
-            }
-            activities{
-                id name description color
-                schedules{
-                    start end day label
-                }
-            }
+    query getUserByCode($id: ID!){
+        student(where:{id:$id}){
+            ${studentData}
         }
     }
 `;
@@ -86,6 +90,14 @@ export const mutationCreateActivity = (schedules: any[]) => {
     `;
     const compiled = template(text, {'imports': { 'map': map }});
     const mutation =  compiled({'schedules': schedulesId})
-    console.log( 'Mutation => ',  mutation);
     return gql`${ mutation }`;
 }
+
+export const mutationUpdateActivityStudent = gql`
+    mutation updateActivityStudent($idStudent:ID! $idActivity:ID!){
+        updateStudent(
+            where:{id:$idStudent}
+            data:{activities:{connect:{id:$idActivity}}}
+        ){ ${studentData} }
+    }
+`
