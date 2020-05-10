@@ -43,7 +43,18 @@ const useStyles = makeStyles((theme) => ({
 
 const MenuToggle = ({ handleClose, open, studentData}: any) => {
     const classes = useStyles();
-    const filteredItems = filterSubjectsByType(studentData);
+    const [filteredItems, setFilteredItems] = React.useState<any>( filterSubjectsByType(studentData) );
+
+    const handleSetSelectedItem = (item: any, type: string) => {
+        if ( item ) {
+            item['isSelected'] = true;
+            if ( type === "Subject") {
+
+            }
+        }
+        const newItems = filteredItems;
+
+    }
     return <div>
         <Drawer
             variant="permanent"

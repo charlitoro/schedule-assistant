@@ -11,9 +11,9 @@ export const queryGetTeachers = gql`
 const studentData = `
     id code name semester
     program{
-        code name
+        id code name
         subjects{
-            code semester type name color
+            id code semester type name color
             groups {
                 id name type
                 teacher { code name }
@@ -31,7 +31,7 @@ const studentData = `
             }
         }
         groups{
-            name type
+            id name type
             teacher{ code name }
             classroom{ code name }
             schedules{
@@ -40,7 +40,7 @@ const studentData = `
         }
     }
     activities{
-        id name description color
+        id name description color isSelected
         schedules{
             start end day label
         }

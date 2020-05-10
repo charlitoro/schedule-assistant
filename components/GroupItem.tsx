@@ -1,4 +1,4 @@
-import {findIndex, map, truncate} from "lodash";
+import {findIndex, map, truncate, filter} from "lodash";
 import {
     Checkbox,
     Collapse,
@@ -27,7 +27,7 @@ const GroupItem = ( {subject}: any) => {
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [checked, setChecked] = React.useState([]);
+    const [checked, setChecked] = React.useState( filter(subject.groups, ['isSelected', true]) );
 
     const handleClick = () => {
         setOpen(!open);

@@ -18,7 +18,7 @@ import Planner from '../components/Planner';
 import React from "react";
 import { executeQuery } from '../utils/graphqlQueryRequest';
 import {queryGetUser, mutationUpdateActivityStudent} from '../utils/graphqlQueries';
-import {IActivity, IStudent} from "../utils/interfaces";
+import {IActivity, IPlanner, IStudent} from "../utils/interfaces";
 import {useMutation} from "@apollo/react-hooks";
 import { get } from 'lodash';
 
@@ -64,6 +64,7 @@ export default withData ( (props: any) => {
     const classes = useStyles();
     const [loading, setLoading] = React.useState(false);
     const [studentData, setStudentData] = React.useState<IStudent>( initStudentData());
+    // const [planner, setPlannerItem] = React.useState<IPlanner | undefined>(studentData.planner);
     const [open, setOpen] = React.useState(false);
 
     const [ updateActivityStudent ] = useMutation( mutationUpdateActivityStudent );
@@ -127,29 +128,29 @@ export default withData ( (props: any) => {
                                 </Fade>
                             </Modal>
                             <Modal
-                            aria-labelledby="loading-title"
-                            aria-describedby="loading-description"
-                            className={classes.modal}
-                            open={loading}
-                            // onClose={handleClose}
-                            closeAfterTransition
-                            BackdropComponent={Backdrop}
-                            BackdropProps={{
-                            timeout: 500,
-                        }}
-                            >
-                            <Fade
-                                in={loading}
-                                style={{
-                                    transitionDelay: loading ? '800ms' : '0ms',
+                                aria-labelledby="loading-title"
+                                aria-describedby="loading-description"
+                                className={classes.modal}
+                                open={loading}
+                                // onClose={handleClose}
+                                closeAfterTransition
+                                BackdropComponent={Backdrop}
+                                BackdropProps={{
+                                    timeout: 500,
                                 }}
-                                unmountOnExit
                             >
-                                <div className={classes.loader}>
-                                    <CircularProgress color="secondary" size="5rem"/>
-                                </div>
-                            </Fade>
-                        </Modal>
+                                <Fade
+                                    in={loading}
+                                    style={{
+                                        transitionDelay: loading ? '800ms' : '0ms',
+                                    }}
+                                    unmountOnExit
+                                >
+                                    <div className={classes.loader}>
+                                        <CircularProgress color="secondary" size="5rem"/>
+                                    </div>
+                                </Fade>
+                            </Modal>
                         </div>
                     </main>
                 </Main>

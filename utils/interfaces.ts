@@ -35,9 +35,16 @@ export interface ISubject {
 
 export interface IActivity {
     id: string;
+    color?: string;
     description?: string;
+    isSelected?: boolean;
     schedules?: ISchedule[];
 }
+
+// export interface IPlannerItem {
+//     id: string;
+//     color:
+// }
 
 export interface IProgram {
     code: string;

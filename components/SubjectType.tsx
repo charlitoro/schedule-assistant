@@ -27,7 +27,7 @@ export const SubjectItem = ( { listName, icon, subjects }: any ) => {
                 {
                     map( subjects, (subject: any ) => {
                         return (
-                            <GroupItem key={subject.code} subject={subject}/>
+                            <GroupItem key={subject.id} subject={subject}/>
                         )
                     } )
                 }

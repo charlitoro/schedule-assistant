@@ -7,7 +7,7 @@ import {
     ListItemIcon,
     ListItemText
 } from "@material-ui/core";
-import {findIndex, map, truncate} from "lodash";
+import {filter, findIndex, map, truncate} from "lodash";
 import {Info} from "@material-ui/icons";
 import React from "react";
 import {createStyles, makeStyles} from "@material-ui/core/styles";
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) =>
 
 const ActivityItem = ( {activities}: any ) => {
     const classes = useStyles();
-    const [checked, setChecked] = React.useState([]);
+    const [checked, setChecked] = React.useState(filter(activities, ['isSelected', true]));
     const [open, setOpen] = React.useState(true);
 
     const handleToggle = (value: any) => () => {
