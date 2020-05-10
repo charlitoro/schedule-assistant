@@ -9,7 +9,6 @@ import {
     Fab,
     Fade,
     Icon,
-    IconButton, LinearProgress,
     Modal,
     Theme
 } from "@material-ui/core";
@@ -18,7 +17,7 @@ import FormActivity from "../components/FormActivity";
 import Planner from '../components/Planner';
 import React from "react";
 import { executeQuery } from '../utils/graphqlQueryRequest';
-import {queryGetUser, queryGetSubjects, mutationUpdateActivityStudent} from '../utils/graphqlQueries';
+import {queryGetUser, mutationUpdateActivityStudent} from '../utils/graphqlQueries';
 import {IActivity, IStudent} from "../utils/interfaces";
 import {useMutation} from "@apollo/react-hooks";
 import { get } from 'lodash';
@@ -92,7 +91,6 @@ export default withData ( (props: any) => {
     }
 
     if( studentData ){
-        // setStudentData(data.student);
         return (
             <div>
                 <Main>

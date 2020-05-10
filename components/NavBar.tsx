@@ -1,9 +1,9 @@
 import React from 'react'
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, IconButton, Typography, Badge, Icon } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton, Typography, Icon } from '@material-ui/core';
 
-const drawerWidth = 240;
+const drawerWidth = 335;
 const useStyles = makeStyles((theme) => ({
     appBar: {
         zIndex: theme.zIndex.drawer + 1,

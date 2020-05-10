@@ -1,4 +1,4 @@
-import {findIndex, map} from "lodash";
+import {findIndex, map, truncate} from "lodash";
 import {
     Checkbox,
     Collapse,
@@ -6,7 +6,6 @@ import {
     List,
     ListItem,
     ListItemIcon,
-    ListItemSecondaryAction,
     ListItemText
 } from "@material-ui/core";
 import {Info} from "@material-ui/icons";
@@ -52,11 +51,12 @@ const GroupItem = ( {subject}: any) => {
                 <ListItemIcon>
                     <Icon style={{color: subject.color,}}>lens</Icon>
                 </ListItemIcon>
-                <ListItemText primary={subject.name} style={{color: "#FFFFFF"}}/>
-                <ListItemSecondaryAction>
-                    {open ? <Icon style={{color: "#FFFFFF"}}>expand_less</Icon> :
-                        <Icon style={{color: "#FFFFFF"}}>expand_more</Icon>}
-                </ListItemSecondaryAction>
+                <ListItemText
+                    primary={truncate(subject.name, {'length': 26, 'separator': ' '})}
+                    style={{color: "#FFFFFF"}}
+                />
+                {open ? <Icon style={{color: "#FFFFFF"}}>expand_less</Icon> :
+                    <Icon style={{color: "#FFFFFF"}}>expand_more</Icon>}
             </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
@@ -77,11 +77,9 @@ const GroupItem = ( {subject}: any) => {
                                     </ListItemIcon>
                                     <ListItemText primary={group.name} secondary={group.type}
                                                   style={{color: "#FFFFFF"}}/>
-                                    <ListItemSecondaryAction>
-                                        <IconButton edge="end" aria-label="comments" size="small">
-                                            <Info fontSize="small" style={{color: "#FFFFFF"}}/>
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
+                                    <IconButton edge="end" aria-label="comments" size="small">
+                                        <Info fontSize="small" style={{color: "#FFFFFF"}}/>
+                                    </IconButton>
                                 </ListItem>
                             )
                         })

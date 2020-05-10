@@ -10,7 +10,7 @@ import {
 // @ts-ignore
 import ColorPicker from "material-ui-color-picker";
 import { AddCircle } from "@material-ui/icons";
-import { get, map, pick, isEmpty } from 'lodash';
+import { get, map, isEmpty } from 'lodash';
 import {useMutation} from "@apollo/react-hooks";
 import { mutationCreateActivity } from "../utils/graphqlQueries";
 

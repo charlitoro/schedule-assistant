@@ -9,7 +9,7 @@ import { ENUM_SUBJECT_TYPE } from '../utils/constants';
 import { filterSubjectsByType } from '../utils/filterSubjects';
 import ActivityItem from "./ActivityItem";
 
-const drawerWidth = 240;
+const drawerWidth = 335;
 const useStyles = makeStyles((theme) => ({
     drawerPaper: {
         position: 'relative',

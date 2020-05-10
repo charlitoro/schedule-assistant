@@ -5,10 +5,9 @@ import {
     List,
     ListItem,
     ListItemIcon,
-    ListItemSecondaryAction,
     ListItemText
 } from "@material-ui/core";
-import {findIndex, map} from "lodash";
+import {findIndex, map, truncate} from "lodash";
 import {Info} from "@material-ui/icons";
 import React from "react";
 import {createStyles, makeStyles} from "@material-ui/core/styles";
@@ -68,12 +67,10 @@ const ActivityItem = ( {activities}: any ) => {
                                         disableRipple
                                         inputProps={{ 'aria-labelledby': labelId }}
                                     />
-                                    <ListItemText primary={activity.name} style={{color: "#FFFFFF"}}/>
-                                    <ListItemSecondaryAction>
-                                        <IconButton edge="end" aria-label="comments" size="small">
-                                            <Info fontSize="small" style={{color: "#FFFFFF"}}/>
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
+                                    <ListItemText primary={truncate(activity.name, {'length': 26, 'separator': ' '})} style={{color: "#FFFFFF"}}/>
+                                    <IconButton edge="end" aria-label="comments" size="small">
+                                        <Info fontSize="small" style={{color: "#FFFFFF"}}/>
+                                    </IconButton>
                                 </ListItem>
                             )
                         } )
