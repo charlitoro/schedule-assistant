@@ -10,7 +10,9 @@ import {
 // @ts-ignore
 import ColorPicker from "material-ui-color-picker";
 import { AddCircle } from "@material-ui/icons";
-import { map } from 'lodash';
+import { get, map, pick, isEmpty } from 'lodash';
+import {useMutation} from "@apollo/react-hooks";
+import { mutationCreateActivity } from "../utils/graphqlQueries";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -62,32 +64,25 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const FromActivity = ( { user }: any ) => {
+const FromActivity = ( { handleActivityClose, handleActivityOpenLoading, handleCreateActivity }: any ) => {
     const classes = useStyles();
 
     const [color, setColor] = React.useState( '#000');
     const [schedules, setNewSchedules] = React.useState<any[]>([]);
     const [loading, setLoading] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
+    const [name, setName ] = React.useState('');
+    const [description, setDescription ] = React.useState('');
+
+    const [ createActivity ] = useMutation( mutationCreateActivity(schedules) );
 
     const handleDelete = (scheduleToDelete: any) => () => {
         setNewSchedules((schedules) => schedules.filter((schedule: any) => schedule.id !== scheduleToDelete.id));
     };
-    const handlerColor = ( color: any ) => {
-        setColor( color );
-    }
-
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => {
-        setOpen(true);
-    };
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleOpenLoading = () => {
-        setLoading( true );
-    }
-
+    const handlerColor = ( color: any ) => { setColor( color ) }
+    const handleOpen = () => { setOpen(true ) };
+    const handleClose = () => { setOpen(false) };
+    const handleOpenLoading = () => { setLoading( true ) }
     const handleAddSchedule = ( schedule: any ) => {
         const newSubjects = [...schedules];
         if ( schedule ) {
@@ -95,6 +90,20 @@ const FromActivity = ( { user }: any ) => {
         }
         setLoading(false);
         setNewSchedules(newSubjects)
+    }
+    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => { setName(event.target.value) };
+    const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => { setDescription(event.target.value) };
+
+    const submitOnClickActivity = async () => {
+        if ( !isEmpty(name) && !isEmpty(schedules) ) {
+            const variables = { description, color, name }
+            handleActivityClose(); handleActivityOpenLoading()
+            const { data } = await createActivity({ variables });
+            handleCreateActivity( get(data, 'createActivity') );
+        } else {
+            // TODO: Mostrar Notificacion
+            console.log('Valores nopueden ser vacios');
+        }
     }
 
     return (
@@ -115,6 +124,7 @@ const FromActivity = ( { user }: any ) => {
                                 label="Activity"
                                 name="activity"
                                 autoFocus
+                                onChange={handleNameChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -124,6 +134,7 @@ const FromActivity = ( { user }: any ) => {
                                 name="description"
                                 label="Description"
                                 id="description"
+                                onChange={handleDescriptionChange}
                             />
                         </Grid>
                         <Grid item xs={12} sm={8}>
@@ -206,11 +217,11 @@ const FromActivity = ( { user }: any ) => {
                         </Grid>
                     </Grid>
                     <Button
-                        type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={submitOnClickActivity}
                     >
                         Accept
                     </Button>

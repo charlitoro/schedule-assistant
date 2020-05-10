@@ -47,19 +47,39 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingTop: theme.spacing(11),
             paddingBottom: theme.spacing(4),
         },
+        loader: {
+            padding: theme.spacing(8, 4, 3),
+        }
     }),
 );
 
 export default withData ( (props: any) => {
     const classes = useStyles();
 
+    const [loading, setLoading] = React.useState(false);
+    const [activities, setActivity] = React.useState<any[]>( []);
+    const [subjects, setSubject] = React.useState<any[]>( []);
     const [open, setOpen] = React.useState(false);
+
+    const handleOpenLoading = () => {
+        setLoading( true );
+    }
+
     const handleOpen = () => {
         setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
     };
+
+    const handleCreateActivity = ( activity: any ) => {
+        const newActivities = [...activities];
+        if ( activity ) {
+            newActivities.push( activity );
+        }
+        setLoading( false );
+        setActivity( newActivities );
+    }
 
     const { data } = executeQuery(queryGetUser, { code: "216013478" });
 
@@ -90,10 +110,38 @@ export default withData ( (props: any) => {
                             >
                                 <Fade in={open}>
                                     <div className={classes.modalPaper}>
-                                        <FormActivity user={ data.student }/>
+                                        <FormActivity
+                                            handleActivityClose={() => handleClose()}
+                                            handleActivityOpenLoading={() => handleOpenLoading()}
+                                            handleCreateActivity={(activity: any) => handleCreateActivity(activity)}
+                                        />
                                     </div>
                                 </Fade>
                             </Modal>
+                            <Modal
+                            aria-labelledby="loading-title"
+                            aria-describedby="loading-description"
+                            className={classes.modal}
+                            open={loading}
+                            // onClose={handleClose}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                            timeout: 500,
+                        }}
+                            >
+                            <Fade
+                                in={loading}
+                                style={{
+                                    transitionDelay: loading ? '800ms' : '0ms',
+                                }}
+                                unmountOnExit
+                            >
+                                <div className={classes.loader}>
+                                    <CircularProgress color="secondary" size="5rem"/>
+                                </div>
+                            </Fade>
+                        </Modal>
                         </div>
                     </main>
                 </Main>

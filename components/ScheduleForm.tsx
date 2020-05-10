@@ -82,7 +82,6 @@ const ScheduleForm = ( { handleClose, handleOpenLoader, handleAddSchedule }: any
                 }
                 handleClose(); handleOpenLoader();
                 const { data } = await createSchedule({variables})
-                console.log( 'Res: ', data.createSchedule );
                 handleAddSchedule(get(data, 'createSchedule'));
             } else {
                 handleClickAlert('La hora de finalización de la actividad debe ser mayor a la hora inicial.');
