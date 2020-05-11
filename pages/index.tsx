@@ -18,16 +18,22 @@ import Planner from '../components/Planner';
 import React from "react";
 import { executeQuery } from '../utils/graphqlQueryRequest';
 import {queryGetUser, mutationUpdateActivityStudent} from '../utils/graphqlQueries';
-import {IActivity, IPlanner, IStudent} from "../utils/interfaces";
+import {IActivity, IGroup, IPlanner, IStudent} from "../utils/interfaces";
 import {useMutation} from "@apollo/react-hooks";
-import { get } from 'lodash';
+import { get, map, forEach, isEmpty, set, unionBy } from 'lodash';
+
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        margin: {
+        marginAdd: {
             position: 'absolute',
-            bottom: theme.spacing(4),
-            right: theme.spacing(4),
+            bottom: theme.spacing(3),
+            right: theme.spacing(3),
+        },
+        marginSave: {
+            position: 'absolute',
+            bottom: theme.spacing(11),
+            right: theme.spacing(3),
         },
         modal: {
             display: 'flex',
@@ -64,7 +70,7 @@ export default withData ( (props: any) => {
     const classes = useStyles();
     const [loading, setLoading] = React.useState(false);
     const [studentData, setStudentData] = React.useState<IStudent>( initStudentData());
-    // const [planner, setPlannerItem] = React.useState<IPlanner | undefined>(studentData.planner);
+    const [keepPlanner, setPlannerItem] = React.useState<{groups: IGroup[], activities: IActivity[]} >({groups:[], activities:[]});
     const [open, setOpen] = React.useState(false);
 
     const [ updateActivityStudent ] = useMutation( mutationUpdateActivityStudent );
@@ -80,12 +86,28 @@ export default withData ( (props: any) => {
         setOpen(false);
     };
 
+    const handleKeepPlanner = (item: any, type: string) => {
+        const newPlanner:any = {groups: [], activities: []};
+        if ( type === 'GROUP') {
+            newPlanner.groups = unionBy([item], keepPlanner.groups, 'id');
+            newPlanner.activities = keepPlanner.activities;
+        } else if( type === 'ACTIVITY' ){
+            newPlanner.activities = unionBy([item], keepPlanner.activities, 'id');
+            newPlanner.groups = keepPlanner.groups;
+        }
+        setPlannerItem(newPlanner);
+    }
+    const handleSavePlanner = () => {
+        // TODO: recorder selected items and build a multi query to
+        //      disconnect and connect groups and activities
+        //      set a student data whit new planer data
+    }
+
     const handleCreateActivity = async ( activity: IActivity ) => {
         if ( activity ) {
             const { data } = await updateActivityStudent( {
                 variables: { idStudent: studentData.id, idActivity: activity.id }
             } );
-            console.log( get(data, 'updateStudent') )
             setStudentData(get(data, 'updateStudent'));
             setLoading( false );
         }
@@ -95,8 +117,16 @@ export default withData ( (props: any) => {
         return (
             <div>
                 <Main>
-                    <Menu studentData={ studentData } />
-                    <Fab color="secondary" aria-label="add" className={classes.margin} onClick={handleOpen}>
+                    <Menu
+                        studentData={ studentData }
+                        handleKeepPlanner={
+                            (item: any, type: string) => handleKeepPlanner(item, type)
+                        }
+                    />
+                    <Fab color="secondary" aria-label="save" className={classes.marginSave} onClick={handleSavePlanner}>
+                        <Icon>save</Icon>
+                    </Fab>
+                    <Fab color="secondary" aria-label="add" className={classes.marginAdd} onClick={handleOpen}>
                         <Icon>add</Icon>
                     </Fab>
                     <main className={classes.content}>

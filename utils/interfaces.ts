@@ -22,6 +22,7 @@ export interface IGroup {
     teacher?: ITeacher;
     classroom?: IClassroom;
     schedules?: ISchedule[];
+    isSelected?: boolean;
 }
 
 export interface ISubject {
@@ -54,10 +55,10 @@ export interface IProgram {
 
 export interface IPlanner {
     id: string;
-    name: string;
-    description: string;
-    activities: IActivity[];
-    groups: IGroup[];
+    name?: string;
+    description?: string;
+    activities?: IActivity[];
+    groups?: IGroup[];
 }
 
 export interface IStudent {

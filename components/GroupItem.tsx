@@ -1,4 +1,4 @@
-import {findIndex, map, truncate, filter} from "lodash";
+import {findIndex, map, set, truncate, filter} from "lodash";
 import {
     Checkbox,
     Collapse,
@@ -11,6 +11,7 @@ import {
 import {Info} from "@material-ui/icons";
 import React from "react";
 import {createStyles, makeStyles} from "@material-ui/core/styles";
+import {IGroup} from "../utils/interfaces";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) =>
     }),
 );
 
-const GroupItem = ( {subject}: any) => {
+const GroupItem = ( {subject, handleKeepPlanner}: any) => {
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -33,15 +34,18 @@ const GroupItem = ( {subject}: any) => {
         setOpen(!open);
     };
 
-    const handleToggle = (value: any) => () => {
+    const handleToggle = (value: IGroup) => () => {
         const currentIndex = findIndex( checked, (obj: any) => obj.id === value.id  );
         const newChecked = [...checked];
+        const newItem: IGroup = {...value};
         if (currentIndex === -1) {
-            // @ts-ignore
-            newChecked.push(value);
+            newItem.isSelected = true;
+            newChecked.push(newItem);
         } else {
+            newItem.isSelected = false;
             newChecked.splice(currentIndex, 1);
         }
+        handleKeepPlanner(newItem, 'GROUP');
         setChecked(newChecked);
     };
 

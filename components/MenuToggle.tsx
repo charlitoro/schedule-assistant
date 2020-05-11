@@ -41,19 +41,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const MenuToggle = ({ handleClose, open, studentData}: any) => {
+const MenuToggle = ({ handleClose, open, studentData, handleKeepPlanner}: any) => {
     const classes = useStyles();
     const [filteredItems, setFilteredItems] = React.useState<any>( filterSubjectsByType(studentData) );
 
     const handleSetSelectedItem = (item: any, type: string) => {
         if ( item ) {
-            item['isSelected'] = true;
-            if ( type === "Subject") {
+            item.isSelected = !item.isSelected;
+            if ( type === "GROUP") {
 
             }
         }
         const newItems = filteredItems;
-
     }
     return <div>
         <Drawer
@@ -76,7 +75,16 @@ const MenuToggle = ({ handleClose, open, studentData}: any) => {
                 map( filteredItems.subjects, (subjectsType: any, key)  => {
                     const type: any = find(ENUM_SUBJECT_TYPE, (type) => type.name == key);
                     return (
-                        <List key={key}> <SubjectItem listName={key} icon={type.icon} subjects={subjectsType} /> </List>
+                        <List key={key}>
+                            <SubjectItem
+                                listName={key}
+                                icon={type.icon}
+                                subjects={subjectsType}
+                                handleKeepPlanner={
+                                    (item: any, type: string) => handleKeepPlanner(item, type)
+                                }
+                            />
+                        </List>
                     )
                 } )
             }
@@ -84,7 +92,14 @@ const MenuToggle = ({ handleClose, open, studentData}: any) => {
                 map( filteredItems, ( activities, key )  => {
                     if ( key === 'activities' && !isEmpty( activities ) ) {
                         return (
-                            <List key="Custom"> <ActivityItem activities={activities}/> </List>
+                            <List key="Custom">
+                                <ActivityItem
+                                    activities={activities}
+                                    handleKeepPlanner={
+                                        (item: any, type: string) => handleKeepPlanner(item, type)
+                                    }
+                                />
+                            </List>
                         )
                     }
                 } )

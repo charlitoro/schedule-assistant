@@ -11,6 +11,7 @@ import {filter, findIndex, map, truncate} from "lodash";
 import {Info} from "@material-ui/icons";
 import React from "react";
 import {createStyles, makeStyles} from "@material-ui/core/styles";
+import {IActivity, IGroup} from "../utils/interfaces";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -20,20 +21,23 @@ const useStyles = makeStyles((theme) =>
     }),
 );
 
-const ActivityItem = ( {activities}: any ) => {
+const ActivityItem = ( {activities, handleKeepPlanner}: any ) => {
     const classes = useStyles();
     const [checked, setChecked] = React.useState(filter(activities, ['isSelected', true]));
     const [open, setOpen] = React.useState(true);
 
-    const handleToggle = (value: any) => () => {
+    const handleToggle = (value: IActivity) => () => {
         const currentIndex = findIndex( checked, (obj: any) => obj.id === value.id  );
         const newChecked = [...checked];
+        const newItem: IActivity = {...value};
         if (currentIndex === -1) {
-            // @ts-ignore
-            newChecked.push(value);
+            newItem.isSelected = true;
+            newChecked.push(newItem);
         } else {
+            newItem.isSelected = false;
             newChecked.splice(currentIndex, 1);
         }
+        handleKeepPlanner(newItem, 'ACTIVITY');
         setChecked(newChecked);
     };
 

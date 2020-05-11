@@ -7,7 +7,7 @@ import {
 import { map } from 'lodash';
 import GroupItem from './GroupItem';
 
-export const SubjectItem = ( { listName, icon, subjects }: any ) => {
+export const SubjectItem = ( { listName, icon, subjects, handleKeepPlanner }: any ) => {
     const [open, setOpen] = React.useState(true);
 
     const handleClick = () => {
@@ -27,7 +27,13 @@ export const SubjectItem = ( { listName, icon, subjects }: any ) => {
                 {
                     map( subjects, (subject: any ) => {
                         return (
-                            <GroupItem key={subject.id} subject={subject}/>
+                            <GroupItem
+                                key={subject.id}
+                                subject={subject}
+                                handleKeepPlanner={
+                                    (item: any, type: string) => handleKeepPlanner(item, type)
+                                }
+                            />
                         )
                     } )
                 }
