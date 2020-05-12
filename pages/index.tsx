@@ -99,11 +99,13 @@ export default withData ( (props: any) => {
         setPlannerItem(newPlanner);
     }
     const handleSavePlanner = async () => {
+        handleOpenLoading();
         // @ts-ignore
         const { data } = await updatePlanner({variables: {id: studentData.planner.id}});
         const newStudentData = {...studentData};
         newStudentData.planner = data.updatePlanner;
         setStudentData(newStudentData);
+        setLoading(false);
     }
 
     const handleCreateActivity = async ( activity: IActivity ) => {
