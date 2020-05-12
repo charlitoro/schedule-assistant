@@ -1,6 +1,10 @@
 import React from 'react';
 import {createStyles, Grid, Paper, Theme} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
+import { ENUM_DAYS, ENUM_HOURS } from '../utils/constants';
+import { map } from 'lodash';
+import {splitItems} from "../plugins/splitItemsByHours";
+import {IDays} from "../utils/interfaces";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -21,17 +25,30 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const days = ['Hora', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado ', 'Domingp'];
-const hours = ['07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',
-    '16:00', '17:00', '18:00', '19:00', '20:00']
 
-const Planner = () => {
+const Planner = ({plannerData}: any) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
             <Grid container spacing={0}>
                 <React.Fragment>
-                    { days.map((day) => {
+                    <Grid container item xs spacing={0}>
+                        <Grid item xs={12}>
+                            <Paper className={classes.paperHead} variant="outlined" square>
+                                Hour
+                            </Paper>
+                        </Grid>
+                        {map(ENUM_HOURS, (hour) => {
+                            return (
+                                <Grid item xs={12} key={`${hour}`}>
+                                    <Paper className={classes.paperHead} variant="outlined" square>
+                                        {hour}
+                                    </Paper>
+                                </Grid>
+                            )
+                        })}
+                    </Grid>
+                    { map(ENUM_DAYS, (day) => {
                         return (
                             <Grid container item xs key={day} spacing={0}>
                                 <Grid item xs={12} key={`head-${day}`}>
@@ -39,22 +56,19 @@ const Planner = () => {
                                         {day}
                                     </Paper>
                                 </Grid>
-                                {
-                                    hours.map((hour) => {
+                                {map(ENUM_DAYS, (hour) => {
+                                    return (
+                                        <Grid item xs={12} key={`${hour}-${day}`}>
+                                            <Paper
+                                                className={classes.paper}
+                                                variant="outlined"
+                                                square
+                                            >
 
-                                        return (
-                                            <Grid item xs={12} key={`${hour}-${day}`}>
-                                                <Paper
-                                                    className={ day === 'Hora' ? classes.paperHead: classes.paper}
-                                                    variant="outlined"
-                                                    square
-                                                >
-                                                    {hour}
-                                                </Paper>
-                                            </Grid>
-                                        )
-                                    })
-                                }
+                                            </Paper>
+                                        </Grid>
+                                    )
+                                })}
                             </Grid>
                         )
                     })}

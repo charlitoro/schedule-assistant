@@ -18,9 +18,10 @@ import Planner from '../components/Planner';
 import React from "react";
 import { executeQuery } from '../utils/graphqlQueryRequest';
 import {queryGetUser, mutationUpdateActivityStudent, mutationUpdatePlanner} from '../utils/graphqlQueries';
-import {IActivity, IGroup, IStudent} from "../utils/interfaces";
+import {IActivity, IDays, IGroup, IStudent} from "../utils/interfaces";
 import {useMutation} from "@apollo/react-hooks";
 import { get, unionBy } from 'lodash';
+import {splitItems} from "../plugins/splitItemsByHours";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -66,12 +67,20 @@ const initStudentData = (): IStudent => {
     return get(data, 'student')
 }
 
+const initPlannerData = (): IDays|undefined => {
+    const student: IStudent = initStudentData();
+    if ( student && student.planner ) {
+        return splitItems(student.planner);
+    }
+}
+
 export default withData ( (props: any) => {
     const classes = useStyles();
     const [loading, setLoading] = React.useState(false);
     const [studentData, setStudentData] = React.useState<IStudent>( initStudentData());
     const [keepPlanner, setPlannerItem] = React.useState<{groups: IGroup[], activities: IActivity[]} >({groups:[], activities:[]});
     const [open, setOpen] = React.useState(false);
+    const [plannerData, setPlannerData] = React.useState<IDays|undefined>(initPlannerData())
 
     const [ updateActivityStudent ] = useMutation( mutationUpdateActivityStudent );
     const [ updatePlanner ] = useMutation( mutationUpdatePlanner(keepPlanner) );
@@ -102,9 +111,12 @@ export default withData ( (props: any) => {
         handleOpenLoading();
         // @ts-ignore
         const { data } = await updatePlanner({variables: {id: studentData.planner.id}});
-        const newStudentData = {...studentData};
+        const newStudentData: IStudent = {...studentData};
         newStudentData.planner = data.updatePlanner;
         setStudentData(newStudentData);
+        // @ts-ignore
+        const newPlannerData: IDays = splitItems(newStudentData.planner);
+        setPlannerData(newPlannerData);
         setLoading(false);
     }
 
@@ -137,7 +149,7 @@ export default withData ( (props: any) => {
                     <main className={classes.content}>
                         <div className={classes.appBarSpacer}>
                             <Container maxWidth="lg" className={classes.container}>
-                                <Planner />
+                                <Planner plannerData={plannerData}/>
                             </Container>
                             <Modal
                                 aria-labelledby="transition-modal-title"
