@@ -51,7 +51,7 @@ const GroupItem = ( {subject, handleKeepPlanner}: any) => {
 
     return (
         <List component="div" disablePadding >
-            <ListItem button onClick={handleClick} className={classes.item}>
+            <ListItem button onClick={handleClick} dense className={classes.item}>
                 <ListItemIcon>
                     <Icon style={{color: subject.color,}}>lens</Icon>
                 </ListItemIcon>

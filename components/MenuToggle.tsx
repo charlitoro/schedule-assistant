@@ -5,7 +5,7 @@ import { Drawer, IconButton, Divider, List, Icon } from '@material-ui/core';
 import { SubjectItem } from './SubjectType';
 import UserCard from './UserCard';
 import { map, find, isEmpty } from 'lodash';
-import { ENUM_SUBJECT_TYPE } from '../utils/constants';
+import { ENUM_SUBJECT_TYPE, IMG_LOGO } from '../utils/constants';
 import { filterSubjectsByType } from '../utils/filterSubjects';
 import ActivityItem from "./ActivityItem";
 
@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
         padding: '0 8px',
         ...theme.mixins.toolbar,
     },
+    imgLogo: {
+        width: drawerWidth-100,
+        height: 50,
+    }
 }));
 
 const MenuToggle = ({ handleClose, open, studentData, handleKeepPlanner}: any) => {
@@ -63,6 +67,7 @@ const MenuToggle = ({ handleClose, open, studentData, handleKeepPlanner}: any) =
             open={open}
         >
             <div className={classes.toolbarIcon}>
+                { open ? <img className={classes.imgLogo} src={IMG_LOGO} alt="logo"/>: <div/> }
                 <IconButton onClick={handleClose}>
                      <Icon style={{color:"#BDBDBD"}}>chevron_left</Icon>
                 </IconButton>
