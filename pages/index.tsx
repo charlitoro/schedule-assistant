@@ -179,7 +179,6 @@ export default withData ( (props: any) => {
                                 aria-describedby="loading-description"
                                 className={classes.modal}
                                 open={loading}
-                                // onClose={handleClose}
                                 closeAfterTransition
                                 BackdropComponent={Backdrop}
                                 BackdropProps={{

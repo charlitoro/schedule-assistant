@@ -29,7 +29,6 @@ export const splitItems = ( planner: IPlanner): IDays => {
             }
         })
     })
-    console.log( itemsByHours );
     return itemsByHours;
 }
 

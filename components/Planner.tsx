@@ -1,10 +1,9 @@
 import React from 'react';
-import {createStyles, Grid, Paper, Theme} from "@material-ui/core";
+import {createStyles, Grid, Icon, Paper, Theme} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { ENUM_DAYS, ENUM_HOURS } from '../utils/constants';
-import { map } from 'lodash';
-import {splitItems} from "../plugins/splitItemsByHours";
-import {IDays} from "../utils/interfaces";
+import { map, get, head } from 'lodash';
+import {IActivity, IGroup} from "../utils/interfaces";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -12,7 +11,9 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
         },
         paper: {
-            padding: theme.spacing(1),
+            padding: theme.spacing(0),
+            // width: '100%',
+            // height: '100%',
             textAlign: 'center',
             color: theme.palette.text.secondary,
         },
@@ -56,19 +57,27 @@ const Planner = ({plannerData}: any) => {
                                         {day}
                                     </Paper>
                                 </Grid>
-                                {map(ENUM_DAYS, (hour) => {
-                                    return (
-                                        <Grid item xs={12} key={`${hour}-${day}`}>
-                                            <Paper
-                                                className={classes.paper}
-                                                variant="outlined"
-                                                square
-                                            >
-
-                                            </Paper>
-                                        </Grid>
-                                    )
-                                })}
+                                {
+                                    map(ENUM_HOURS, (hour) => {
+                                        const foundItems = get(plannerData, `${day}.${hour}`);
+                                        const item: any = head(foundItems);
+                                        let color;
+                                        if ( get(item, 'color') ) {
+                                            color = item.color;
+                                        } else if( get(item, 'subject.color') ) {
+                                            color = item.subject.color;
+                                        } else{
+                                            color = '#ffffff'
+                                        }
+                                        return (
+                                            <Grid item xs={12} key={`${day}-${hour}`}>
+                                                <Paper className={classes.paper} variant="outlined" square>
+                                                    <Icon fontSize="large" style={{color: color}}>beenhere</Icon>
+                                                </Paper>
+                                            </Grid>
+                                        )
+                                    })
+                                }
                             </Grid>
                         )
                     })}
