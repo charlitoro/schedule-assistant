@@ -17,10 +17,10 @@ import FormActivity from "../components/FormActivity";
 import Planner from '../components/Planner';
 import React from "react";
 import { executeQuery } from '../utils/graphqlQueryRequest';
-import {queryGetUser, mutationUpdateActivityStudent} from '../utils/graphqlQueries';
-import {IActivity, IGroup, IPlanner, IStudent} from "../utils/interfaces";
+import {queryGetUser, mutationUpdateActivityStudent, mutationUpdatePlanner} from '../utils/graphqlQueries';
+import {IActivity, IGroup, IStudent} from "../utils/interfaces";
 import {useMutation} from "@apollo/react-hooks";
-import { get, map, forEach, isEmpty, set, unionBy } from 'lodash';
+import { get, unionBy } from 'lodash';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -74,6 +74,7 @@ export default withData ( (props: any) => {
     const [open, setOpen] = React.useState(false);
 
     const [ updateActivityStudent ] = useMutation( mutationUpdateActivityStudent );
+    const [ updatePlanner ] = useMutation( mutationUpdatePlanner(keepPlanner) );
 
     const handleOpenLoading = () => {
         setLoading( true );
@@ -97,10 +98,12 @@ export default withData ( (props: any) => {
         }
         setPlannerItem(newPlanner);
     }
-    const handleSavePlanner = () => {
-        // TODO: recorder selected items and build a multi query to
-        //      disconnect and connect groups and activities
-        //      set a student data whit new planer data
+    const handleSavePlanner = async () => {
+        // @ts-ignore
+        const { data } = await updatePlanner({variables: {id: studentData.planner.id}});
+        const newStudentData = {...studentData};
+        newStudentData.planner = data.updatePlanner;
+        setStudentData(newStudentData);
     }
 
     const handleCreateActivity = async ( activity: IActivity ) => {

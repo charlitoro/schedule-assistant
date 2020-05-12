@@ -1,5 +1,6 @@
 import { gql } from "apollo-boost";
-import {map, pick, template} from 'lodash';
+import {map, pick, compact,template} from 'lodash';
+import {IActivity, IGroup} from "./interfaces";
 
 export const queryGetTeachers = gql`
     query {
@@ -16,6 +17,7 @@ const studentData = `
             id code semester type name color
             groups {
                 id name type
+                subject{ color }
                 teacher { code name }
                 classroom{ code name }
                 schedules{ start end day label }
@@ -25,13 +27,14 @@ const studentData = `
     planner{
         id name description
         activities{
-            id description
+            id description name color
             schedules{
                 start end day label
             }
         }
         groups{
             id name type
+            subject{ color }
             teacher{ code name }
             classroom{ code name }
             schedules{
@@ -101,3 +104,57 @@ export const mutationUpdateActivityStudent = gql`
         ){ ${studentData} }
     }
 `
+
+export const mutationUpdatePlanner = (keepPlanner: {groups: IGroup[], activities: IActivity[]}) => {
+    const connectGroupsId = compact( map(keepPlanner.groups, (group) => {
+        if ( group.isSelected ) { return pick(group, 'id') }
+    }));
+    const disconnectGroupsId = compact( map(keepPlanner.groups, (group) => {
+        if ( !group.isSelected ) { return pick(group, 'id') }
+    }));
+    const connectActivitiesId = compact( map(keepPlanner.activities, (activity) => {
+        if ( activity.isSelected ) { return pick(activity, 'id') }
+    }));
+    const disconnectActivitiesId = compact( map(keepPlanner.activities, (activity) => {
+        if ( !activity.isSelected ) { return pick(activity, 'id') }
+    }));
+    const text = `
+        mutation updatePlanner($id:ID!){
+          updatePlanner(
+            where: {id:$id}
+            data: {
+              groups: {
+                connect: [<% map(planner.groups.connect, function(group) { %>{id: "<%- group.id %>"} <% }); %>]
+                disconnect: [<% map(planner.groups.disconnect, function(group) { %>{id: "<%- group.id %>"} <% }); %>]
+              }
+              activities: {
+                connect: [<% map(planner.activities.connect, function(activity) { %>{id: "<%- activity.id %>"} <% }); %>]
+                disconnect: [<% map(planner.activities.disconnect, function(activity) { %>{id: "<%- activity.id %>"} <% }); %>]
+              }
+            }
+          ){
+            id name description
+            activities{
+                id description name color
+                schedules{
+                    start end day label
+                }
+            }
+            groups{
+                id name type
+                subject{ color }
+                teacher{ code name }
+                classroom{ code name }
+                schedules{ start end day label }
+            }
+          }
+        }
+    `;
+    const planner ={
+        groups: { connect: connectGroupsId, disconnect: disconnectGroupsId },
+        activities: { connect: connectActivitiesId, disconnect: disconnectActivitiesId }
+    }
+    const compiled = template(text, {'imports': { 'map': map }});
+    const mutation =  compiled({'planner': planner })
+    return gql`${ mutation }`;
+}

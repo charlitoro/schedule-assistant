@@ -22,11 +22,13 @@ export interface IGroup {
     teacher?: ITeacher;
     classroom?: IClassroom;
     schedules?: ISchedule[];
+    subject?: ISubject;
     isSelected?: boolean;
 }
 
 export interface ISubject {
-    code: string;
+    id?: string;
+    code?: string;
     semester?: number;
     type?: string;
     name: string;
