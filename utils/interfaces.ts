@@ -51,7 +51,7 @@ export interface IProgram {
 }
 
 export interface IPlanner {
-    id: string;
+    id?: string;
     name?: string;
     description?: string;
     activities?: IActivity[];
