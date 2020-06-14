@@ -105,6 +105,7 @@ export default withData ( (props: any) => {
             newPlanner.activities = unionBy([item], keepPlanner.activities, 'id');
             newPlanner.groups = keepPlanner.groups;
         }
+        // FIXME: Corregir la informacion duplicada en el plannerData
         setPlannerItem(newPlanner);
     }
     const handleSavePlanner = async () => {

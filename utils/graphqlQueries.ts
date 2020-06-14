@@ -34,7 +34,7 @@ const studentData = `
         }
         groups{
             id name type
-            subject{ color }
+            subject{ color name }
             teacher{ code name }
             classroom{ code name }
             schedules{
