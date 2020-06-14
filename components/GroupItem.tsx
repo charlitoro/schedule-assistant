@@ -1,4 +1,4 @@
-import {findIndex, map, set, truncate, filter} from "lodash";
+import {findIndex, map, truncate, filter} from "lodash";
 import {
     Checkbox,
     Collapse,

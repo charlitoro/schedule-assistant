@@ -1,24 +1,17 @@
 import React from 'react';
 import {
-    Backdrop,
     createStyles,
     Dialog,
     DialogTitle,
-    Fade,
     List,
     Grid,
     Icon, IconButton,
-    Modal,
     Paper,
-    Snackbar,
     Theme, ListItem, ListItemAvatar, ListItemText, DialogContent, DialogContentText
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { ENUM_DAYS, ENUM_HOURS } from '../utils/constants';
-import { map, get, forEach,head, compact, uniqBy} from 'lodash';
-import {IActivity, IGroup} from "../utils/interfaces";
-import FormActivity from "./FormActivity";
-import {Alert} from "@material-ui/lab";
+import { map, get, head, compact, uniqBy} from 'lodash';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -27,8 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         paper: {
             padding: theme.spacing(0),
-            // width: '100%',
-            // height: '100%',
             textAlign: 'center',
             color: theme.palette.text.secondary,
         },
@@ -117,7 +108,7 @@ function SimpleDialog(props: SimpleDialogProps) {
                     return (
                         <ListItem key={item.id}>
                             <ListItemAvatar>
-                                <Icon style={{color: itemList.color,}}>lens</Icon>
+                                <Icon fontSize="large" style={{color: itemList.color,}}>lens</Icon>
                             </ListItemAvatar>
                             <ListItemText primary={itemList.primary} secondary={itemList.secondary} />
                         </ListItem>
@@ -173,7 +164,7 @@ const Planner = ({plannerData}: any) => {
                                     map(ENUM_HOURS, (hour) => {
                                         // TODO: Refactorizar eliminacion de elementos repetidos,
                                         const itemStatus: ItemStatus = validateScheduleCross( plannerData, day, hour );
-                                        const background = itemStatus.cross ? '#FF9800': '#FFFFFF';
+                                        const background = itemStatus.cross ? '#FF9800': undefined;
                                         return (
                                             <Grid item xs={12} key={`${day}-${hour}`}>
                                                 <Paper className={classes.paper} variant="outlined" square>
