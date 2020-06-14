@@ -47,17 +47,18 @@ const useStyles = makeStyles((theme) => ({
 
 const MenuToggle = ({ handleClose, open, studentData, handleKeepPlanner}: any) => {
     const classes = useStyles();
-    const [filteredItems, setFilteredItems] = React.useState<any>( filterSubjectsByType(studentData) );
+    // const [filteredItems, setFilteredItems] = React.useState<any>( filterSubjectsByType(studentData) );
 
-    const handleSetSelectedItem = (item: any, type: string) => {
-        if ( item ) {
-            item.isSelected = !item.isSelected;
-            if ( type === "GROUP") {
-
-            }
-        }
-        const newItems = filteredItems;
-    }
+    // const handleSetSelectedItem = (item: any, type: string) => {
+    //     if ( item ) {
+    //         item.isSelected = !item.isSelected;
+    //         if ( type === "GROUP") {
+    //
+    //         }
+    //     }
+    //     const newItems = filteredItems;
+    // }
+    const filteredItems = filterSubjectsByType(studentData);
     return <div>
         <Drawer
             variant="permanent"
