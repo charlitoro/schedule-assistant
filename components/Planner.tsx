@@ -66,7 +66,7 @@ const  validateScheduleCross = ( plannerData: any[], day: string, hour: string )
         const item: any = head(foundItems);
         status.title = `${day} at ${hour} `;
         status.message = `Your group or activity in this schedule:`;
-        if ( get(foundItems, 'color') ) {
+        if ( get(item, 'color') ) {
             status.color = item.color;
         } else if( get(item, 'subject.color') ) {
             status.color = item.subject.color;
@@ -163,6 +163,7 @@ const Planner = ({plannerData}: any) => {
                                 {
                                     map(ENUM_HOURS, (hour) => {
                                         // TODO: Refactorizar eliminacion de elementos repetidos,
+                                        console.log(plannerData);
                                         const itemStatus: ItemStatus = validateScheduleCross( plannerData, day, hour );
                                         const background = itemStatus.cross ? '#FF9800': undefined;
                                         return (
