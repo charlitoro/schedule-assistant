@@ -76,9 +76,7 @@ const initPlannerData = (): IDays|undefined => {
 
 const refreshPlannerList = ( list: any, item: any ) => {
     let updatedList = [...list];
-    console.log( '===> Item: ', item );
     if ( item.isSelected ){
-        console.log( '==> Entro' );
         updatedList = unionBy( [item], updatedList, 'id');
     } else {
         remove(updatedList, (obj) => obj.id == item.id );
