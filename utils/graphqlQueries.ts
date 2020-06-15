@@ -17,7 +17,7 @@ const studentData = `
             id code semester type name color
             groups {
                 id name type
-                subject{ color }
+                subject{ color name }
                 teacher { code name }
                 classroom{ code name }
                 schedules{ start end day label }
@@ -142,7 +142,7 @@ export const mutationUpdatePlanner = (keepPlanner: {groups: IGroup[], activities
             }
             groups{
                 id name type
-                subject{ color }
+                subject{ color name }
                 teacher{ code name }
                 classroom{ code name }
                 schedules{ start end day label }

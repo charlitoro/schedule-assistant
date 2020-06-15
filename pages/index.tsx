@@ -20,7 +20,7 @@ import { executeQuery } from '../utils/graphqlQueryRequest';
 import {queryGetUser, mutationUpdateActivityStudent, mutationUpdatePlanner} from '../utils/graphqlQueries';
 import {IActivity, IDays, IGroup, IStudent} from "../utils/interfaces";
 import {useMutation} from "@apollo/react-hooks";
-import { get, unionBy } from 'lodash';
+import { get, unionBy, concat, find, remove } from 'lodash';
 import {splitItems} from "../plugins/splitItemsByHours";
 
 
@@ -74,6 +74,18 @@ const initPlannerData = (): IDays|undefined => {
     }
 }
 
+const refreshPlannerList = ( list: any, item: any ) => {
+    let updatedList = [...list];
+    console.log( '===> Item: ', item );
+    if ( item.isSelected ){
+        console.log( '==> Entro' );
+        updatedList = unionBy( [item], updatedList, 'id');
+    } else {
+        remove(updatedList, (obj) => obj.id == item.id );
+    }
+    return updatedList;
+}
+
 export default withData ( (props: any) => {
     const classes = useStyles();
     const [loading, setLoading] = React.useState(false);
@@ -97,16 +109,24 @@ export default withData ( (props: any) => {
     };
 
     const handleKeepPlanner = (item: any, type: string) => {
-        const newPlanner:any = {groups: [], activities: []};
+        const newPlanner: any = {groups: [], activities: []};
+        const updatedStudentData: any = {...studentData};
         if ( type === 'GROUP') {
             newPlanner.groups = unionBy([item], keepPlanner.groups, 'id');
             newPlanner.activities = keepPlanner.activities;
+            //
+            updatedStudentData.planner.groups = refreshPlannerList(updatedStudentData.planner.groups, item);
         } else if( type === 'ACTIVITY' ){
             newPlanner.activities = unionBy([item], keepPlanner.activities, 'id');
             newPlanner.groups = keepPlanner.groups;
+            //
+            updatedStudentData.planner.activities = refreshPlannerList(updatedStudentData.planner.activities, item);
         }
         // FIXME: Corregir la informacion duplicada en el plannerData
-        setPlannerItem(newPlanner);
+        const newPlannerData: IDays = splitItems(updatedStudentData.planner);
+        setStudentData( updatedStudentData );
+        setPlannerData( newPlannerData );
+        setPlannerItem( newPlanner );
     }
     const handleSavePlanner = async () => {
         handleOpenLoading();
