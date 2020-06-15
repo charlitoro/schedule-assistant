@@ -163,7 +163,6 @@ const Planner = ({plannerData}: any) => {
                                 {
                                     map(ENUM_HOURS, (hour) => {
                                         // TODO: Refactorizar eliminacion de elementos repetidos,
-                                        console.log(plannerData);
                                         const itemStatus: ItemStatus = validateScheduleCross( plannerData, day, hour );
                                         const background = itemStatus.cross ? '#FF9800': undefined;
                                         return (
