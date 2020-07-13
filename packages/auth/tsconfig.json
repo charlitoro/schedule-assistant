@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true
+  },
+  "rules": {
+    "semi": [ 2, "always" ],
+    "indent": [ "error", 4 ]
+  },
+  "exclude": [ "node_modules" ],
+  "include": [ "**/*.ts" ]
+}
