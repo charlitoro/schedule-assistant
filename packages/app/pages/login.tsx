@@ -14,14 +14,21 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { isEmpty, get } from 'lodash';
+import {isEmpty, get, map} from 'lodash';
 import fetch from 'node-fetch';
 import { AUTH_SERVER, CLIENT_ID } from '../utils/constants';
 import {NextPage} from "next";
+import {Snackbar} from "@material-ui/core";
+import MuiAlert, {AlertProps} from "@material-ui/lab/Alert";
+
 
 Cookie.set('student', {});
 
 const Index = dynamic( () => import('./index') );
+
+function Alert(props: AlertProps) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 function Copyright() {
     return (
@@ -63,6 +70,7 @@ const SignIn:NextPage = ( ) => {
     const [message, setMessage] = useState('' );
     const [logged, setToggleLogin] = useState( false );
     const [student, setStudent] = useState({})
+    const [open, setOpenAlert] = React.useState(false);
 
     // useEffect( () => {
     //     Cookie.set("student", JSON.stringify( student ))
@@ -92,7 +100,7 @@ const SignIn:NextPage = ( ) => {
                 setToggleLogin( true );
             } catch (e) {
                 console.log( e.message );
-                setMessage( e.message );
+                handleClickAlert(e.message);
             }
         } else {
             //TODO: Mostrar notificacion
@@ -100,6 +108,17 @@ const SignIn:NextPage = ( ) => {
     }
     const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => { setCode(event.target.value) };
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => { setPassword(event.target.value) };
+
+    const handleCloseAlert = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenAlert(false);
+    };
+    const handleClickAlert = (message: string) => {
+        setOpenAlert(true);
+        setMessage(message)
+    };
 
     if( logged ) {
         return <Index />
@@ -164,6 +183,11 @@ const SignIn:NextPage = ( ) => {
             <Box mt={8}>
                 <Copyright />
             </Box>
+            <Snackbar open={open} autoHideDuration={4000} onClose={handleCloseAlert}>
+                <Alert onClose={handleCloseAlert} severity="error">
+                    {message}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 }
