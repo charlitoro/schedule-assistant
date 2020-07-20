@@ -1,6 +1,8 @@
 import {Icon, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import React from "react";
+import Cookie from "js-cookie";
 import { makeStyles } from "@material-ui/core/styles";
+import Router from "next/router";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -13,11 +15,15 @@ const UserCard = ({user}: any) => {
     const [open, setOpen] = React.useState(true);
 
     const handleClick = () => {
+        Cookie.set('student', {});
+        Router.replace("/", "/login", { shallow: true });
         setOpen(!open);
+        window.location.reload();
     };
+
     return (
         <div>
-            <ListItem onClick={handleClick} className={classes.root}>
+            <ListItem button onClick={handleClick} className={classes.root}>
                 <ListItemIcon>
                     <Icon color="primary" style={{ fontSize: 40 }} >account_circle</Icon>
                 </ListItemIcon>

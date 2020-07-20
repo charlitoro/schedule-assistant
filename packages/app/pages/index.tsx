@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import Router from 'next/router'
 import dynamic from "next/dynamic";
 import { NextPage, NextPageContext } from 'next'
 import Planner from '../components/Planner';
@@ -10,6 +11,12 @@ import {CookieProps} from "../utils/interfaces";
 const LoginPage = dynamic( () => import('./login') );
 
 const Index: NextPage<CookieProps | undefined> = ( { id, code, name }: CookieProps ) => {
+
+    useEffect(() => {
+        if (id) return;
+        Router.replace("/", "/login", { shallow: true });
+    }, [id]);
+
     if( isEmpty(id) || isEmpty(code) ) {
         return <LoginPage />;
     }

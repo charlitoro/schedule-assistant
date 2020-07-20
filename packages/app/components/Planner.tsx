@@ -1,7 +1,7 @@
 import Main from '../layouts/Main';
 import { Menu } from './Menu';
 import {
-    Backdrop,
+    Backdrop, Box,
     CircularProgress,
     Container,
     createStyles,
@@ -21,6 +21,7 @@ import {CookieProps, IActivity, IDays, IGroup, IStudent} from "../utils/interfac
 import {useMutation} from "@apollo/react-hooks";
 import { get, unionBy, remove } from 'lodash';
 import {splitItems} from "../plugins/splitItemsByHours";
+import Copyright from "./Copyright";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -61,13 +62,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const initStudentData = (): IStudent => {
-    const { data } = executeQuery(queryGetUser, { id: "5ea4b8f49b7965000851cdbc" });
+const initStudentData = ( id: any): IStudent => {
+    const { data } = executeQuery(queryGetUser, { id });
     return get(data, 'student')
 }
 
-const initPlannerData = (): IDays|undefined => {
-    const student: IStudent = initStudentData();
+const initPlannerData = (id: any): IDays|undefined => {
+    const student: IStudent = initStudentData(id);
     if ( student && student.planner ) {
         return splitItems(student.planner);
     }
@@ -84,13 +85,12 @@ const refreshPlannerList = ( list: any, item: any ) => {
 }
 
 const Planner = ({ id }: CookieProps) => {
-
     const classes = useStyles();
     const [loading, setLoading] = React.useState(false);
-    const [studentData, setStudentData] = React.useState<IStudent>( initStudentData());
+    const [studentData, setStudentData] = React.useState<IStudent>( initStudentData( id ));
     const [keepPlanner, setPlannerItem] = React.useState<{groups: IGroup[], activities: IActivity[]} >({groups:[], activities:[]});
     const [open, setOpen] = React.useState(false);
-    const [plannerData, setPlannerData] = React.useState<IDays|undefined>(initPlannerData())
+    const [plannerData, setPlannerData] = React.useState<IDays|undefined>(initPlannerData(id))
 
     const [ updateActivityStudent ] = useMutation( mutationUpdateActivityStudent );
     const [ updatePlanner ] = useMutation( mutationUpdatePlanner(keepPlanner) );

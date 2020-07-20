@@ -1,46 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import dynamic from "next/dynamic";
+import React, { useState } from 'react';
 import Cookie from "js-cookie";
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
+import {
+    Avatar,
+    Button,
+    CssBaseline,
+    TextField,
+    FormControlLabel,
+    Checkbox,
+    Link,
+    Grid,
+    Box,
+    Container,
+    Typography,
+    Snackbar
+} from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import {isEmpty, get, map} from 'lodash';
+import { isEmpty } from 'lodash';
 import fetch from 'node-fetch';
 import { AUTH_SERVER, CLIENT_ID } from '../utils/constants';
-import {NextPage} from "next";
-import {Snackbar} from "@material-ui/core";
 import MuiAlert, {AlertProps} from "@material-ui/lab/Alert";
+import Router from "next/router";
+import Copyright from '../components/Copyright';
 
 
 Cookie.set('student', {});
 
-const Index = dynamic( () => import('./index') );
-
 function Alert(props: AlertProps) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -63,18 +50,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const SignIn:NextPage = ( ) => {
+const SignIn = () => {
     const classes = useStyles();
     const [code, setCode] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('' );
-    const [logged, setToggleLogin] = useState( false );
-    const [student, setStudent] = useState({})
     const [open, setOpenAlert] = React.useState(false);
-
-    // useEffect( () => {
-    //     Cookie.set("student", JSON.stringify( student ))
-    // }, [student]);
 
     const submitOnClick = async() => {
         if( !isEmpty(code) && !isEmpty(password) ) {
@@ -95,9 +76,9 @@ const SignIn:NextPage = ( ) => {
                         throw new Error('Internal server error');
                     return res.json();
                 } );
-                Cookie.set("student", JSON.stringify( student ))
-                setStudent( student );
-                setToggleLogin( true );
+                Cookie.set("student", JSON.stringify( student ));
+                await Router.replace("/login", "/", { shallow: true });
+                window.location.reload();
             } catch (e) {
                 console.log( e.message );
                 handleClickAlert(e.message);
@@ -120,9 +101,6 @@ const SignIn:NextPage = ( ) => {
         setMessage(message)
     };
 
-    if( logged ) {
-        return <Index />
-    }
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
