@@ -7,9 +7,9 @@
   "author": "Andres Toro <carlostoro04@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "app": "lerna run app:start",
-    "build": "lerna run app:build",
-    "auth": "lerna run auth:start"
+    "app": "lerna run app:start --stream",
+    "build": "lerna run app:build --stream",
+    "auth": "lerna run auth:start --stream"
   },
   "packages": [
     "packages/*"
