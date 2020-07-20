@@ -87,7 +87,7 @@ const ScheduleForm = ( { handleClose, handleOpenLoader, handleAddSchedule }: any
                 handleClickAlert('La hora de finalización de la actividad debe ser mayor a la hora inicial.');
             }
         } else {
-            handleClickAlert('Seleccione el dia del horario, es un campo requerido para el Planner.');
+            handleClickAlert('Seleccione el dia del horario, es un campo requerido para el Workspace.');
         }
     }
 

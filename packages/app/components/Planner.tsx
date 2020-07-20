@@ -1,193 +1,233 @@
-import React from 'react';
+import { NextPage, NextPageContext } from 'next'
+import Main from '../layouts/Main';
+import { Menu } from './Menu';
 import {
+    Backdrop,
+    CircularProgress,
+    Container,
     createStyles,
-    Dialog,
-    DialogTitle,
-    List,
-    Grid,
-    Icon, IconButton,
-    Paper,
-    Theme, ListItem, ListItemAvatar, ListItemText, DialogContent, DialogContentText
+    Fab,
+    Fade,
+    Icon,
+    Modal,
+    Theme
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { ENUM_DAYS, ENUM_HOURS } from '../utils/constants';
-import { map, get, head, compact, uniqBy} from 'lodash';
+import {makeStyles} from "@material-ui/core/styles";
+import FormActivity from "./FormActivity";
+import Workspace from './Workspace';
+import React from "react";
+import { executeQuery } from '../utils/graphqlQueryRequest';
+import {queryGetUser, mutationUpdateActivityStudent, mutationUpdatePlanner} from '../utils/graphqlQueries';
+import {IActivity, IDays, IGroup, IStudent} from "../utils/interfaces";
+import {useMutation} from "@apollo/react-hooks";
+import { get, unionBy, concat, find, remove } from 'lodash';
+import {splitItems} from "../plugins/splitItemsByHours";
+
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
+        marginAdd: {
+            position: 'absolute',
+            bottom: theme.spacing(3),
+            right: theme.spacing(3),
+        },
+        marginSave: {
+            position: 'absolute',
+            bottom: theme.spacing(11),
+            right: theme.spacing(3),
+        },
+        modal: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        modalPaper: {
+            backgroundColor: theme.palette.background.paper,
+            boxShadow: theme.shadows[5],
+            padding: theme.spacing(2, 4, 3),
+        },
+        content: {
             flexGrow: 1,
+            height: '100vh',
+            overflow: 'auto',
         },
-        paper: {
-            padding: theme.spacing(0),
-            textAlign: 'center',
-            color: theme.palette.text.secondary,
+        appBarSpacer: theme.mixins.toolbar,
+        container: {
+            paddingTop: theme.spacing(11),
+            paddingBottom: theme.spacing(4),
         },
-        paperHead: {
-            padding: theme.spacing(1),
-            textAlign: 'center',
-            color: theme.palette.text.primary,
-            background: theme.palette.grey["400"],
-        },
+        loader: {
+            padding: theme.spacing(8, 4, 3),
+        }
     }),
 );
 
-export interface SimpleDialogProps {
-    open: boolean;
-    onClose: () => void;
-    itemStatus: ItemStatus
+const initStudentData = (): IStudent => {
+    const { data } = executeQuery(queryGetUser, { id: "5ea4b8f49b7965000851cdbc" });
+    return get(data, 'student')
 }
 
-interface ItemStatus {
-    color?: string;
-    isDisable?: boolean;
-    icon?: string;
-    items?: any[];
-    title?: string;
-    message?: string;
-    cross?: boolean;
-}
-
-const  validateScheduleCross = ( plannerData: any[], day: string, hour: string ): ItemStatus => {
-    const foundItems = uniqBy(compact(get(plannerData, `${day}.${hour}`)), 'id');
-    const status: ItemStatus = {
-        color: "#ffffff",
-        isDisable: false,
-        icon: "beenhere",
-        items: foundItems,
-        cross: false,
-    };
-    if (foundItems.length > 1) {
-        status.title = `Cross Schedules`;
-        status.message = `Cross Schedules on ${day} at ${hour}, in the following groups or activities:`;
-        status.icon = 'error';
-        status.cross = true;
-    } else {
-        const item: any = head(foundItems);
-        status.title = `${day} at ${hour} `;
-        status.message = `Your group or activity in this schedule:`;
-        if ( get(item, 'color') ) {
-            status.color = item.color;
-        } else if( get(item, 'subject.color') ) {
-            status.color = item.subject.color;
-        } else{
-            status.isDisable = true;
-        }
+const initPlannerData = (): IDays|undefined => {
+    const student: IStudent = initStudentData();
+    if ( student && student.planner ) {
+        return splitItems(student.planner);
     }
-    return status;
 }
 
-function SimpleDialog(props: SimpleDialogProps) {
-    const { onClose, open, itemStatus } = props;
-
-    const handleClose = () => {
-        onClose();
-    };
-
-    return (
-        <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-            <DialogTitle id="simple-dialog-title">{ itemStatus.title }</DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-slide-description">
-                    { itemStatus.message }
-                </DialogContentText>
-            </DialogContent>
-            <List>
-                {map( itemStatus.items, (item: any) => {
-                    const itemList = {color: "", primary: "", secondary: ""};
-                    if (get(item, 'type')) {
-                        console.log(item);
-                        itemList.color = get(item, 'subject.color');
-                        itemList.primary = `${get(item, 'subject.name')} - ${get(item, 'type')}`
-                        itemList.secondary = `${get(item, 'classroom.name')} - ${get(item, 'teacher.name')}`;
-                    } else {
-                        itemList.color = get(item, 'color');
-                        itemList.primary = get(item, 'name')
-                        itemList.secondary = get(item, 'description')
-                    }
-                    return (
-                        <ListItem key={item.id}>
-                            <ListItemAvatar>
-                                <Icon fontSize="large" style={{color: itemList.color,}}>lens</Icon>
-                            </ListItemAvatar>
-                            <ListItemText primary={itemList.primary} secondary={itemList.secondary} />
-                        </ListItem>
-                    )
-                })}
-            </List>
-        </Dialog>
-    );
+const refreshPlannerList = ( list: any, item: any ) => {
+    let updatedList = [...list];
+    if ( item.isSelected ){
+        updatedList = unionBy( [item], updatedList, 'id');
+    } else {
+        remove(updatedList, (obj) => obj.id == item.id );
+    }
+    return updatedList;
 }
 
-const Planner = ({plannerData}: any) => {
+interface Props {
+    loggedStudent?: boolean;
+}
+
+const Planner: NextPage<Props> = ({ loggedStudent }: Props) => {
+
     const classes = useStyles();
+    const [loading, setLoading] = React.useState(false);
+    const [studentData, setStudentData] = React.useState<IStudent>( initStudentData());
+    const [keepPlanner, setPlannerItem] = React.useState<{groups: IGroup[], activities: IActivity[]} >({groups:[], activities:[]});
     const [open, setOpen] = React.useState(false);
-    const [itemStatus, setItemStatus] = React.useState<ItemStatus>({ });
+    const [plannerData, setPlannerData] = React.useState<IDays|undefined>(initPlannerData())
 
+    const [ updateActivityStudent ] = useMutation( mutationUpdateActivityStudent );
+    const [ updatePlanner ] = useMutation( mutationUpdatePlanner(keepPlanner) );
+
+    const handleOpenLoading = () => {
+        setLoading( true );
+    }
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
     const handleClose = () => {
         setOpen(false);
     };
-    const handleClickOpen = ( newItemStatus: ItemStatus ) => {
-        setItemStatus( newItemStatus );
-        setOpen(true );
-    };
 
-    return (
-        <div className={classes.root}>
-            <Grid container spacing={0}>
-                <React.Fragment>
-                    <Grid container item xs spacing={0}>
-                        <Grid item xs={12}>
-                            <Paper className={classes.paperHead} variant="outlined" square>
-                                Hour
-                            </Paper>
-                        </Grid>
-                        {map(ENUM_HOURS, (hour) => {
-                            return (
-                                <Grid item xs={12} key={`${hour}`}>
-                                    <Paper className={classes.paperHead} variant="outlined" square>
-                                        {hour}
-                                    </Paper>
-                                </Grid>
-                            )
-                        })}
-                    </Grid>
-                    { map(ENUM_DAYS, (day) => {
-                        return (
-                            <Grid container item xs key={day} spacing={0}>
-                                <Grid item xs={12} key={`head-${day}`}>
-                                    <Paper className={classes.paperHead} variant="outlined" square>
-                                        {day}
-                                    </Paper>
-                                </Grid>
-                                {
-                                    map(ENUM_HOURS, (hour) => {
-                                        // TODO: Refactorizar eliminacion de elementos repetidos,
-                                        const itemStatus: ItemStatus = validateScheduleCross( plannerData, day, hour );
-                                        const background = itemStatus.cross ? '#FF9800': undefined;
-                                        return (
-                                            <Grid item xs={12} key={`${day}-${hour}`}>
-                                                <Paper className={classes.paper} variant="outlined" square>
-                                                    <IconButton
-                                                        disabled={itemStatus.isDisable}
-                                                        onClick={ () => handleClickOpen(itemStatus)}
-                                                        style={{background}}
-                                                    >
-                                                        <Icon style={{color: itemStatus.color}}>{itemStatus.icon}</Icon>
-                                                    </IconButton>
-                                                </Paper>
-                                            </Grid>
-                                        )
-                                    })
-                                }
-                            </Grid>
-                        )
-                    })}
-                </React.Fragment>
-            </Grid>
-            <SimpleDialog open={open} onClose={handleClose} itemStatus={itemStatus} />
-        </div>
-    )
+    const handleKeepPlanner = (item: any, type: string) => {
+        const newPlanner: any = {groups: [], activities: []};
+        const updatedStudentData: any = {...studentData};
+        if ( type === 'GROUP') {
+            newPlanner.groups = unionBy([item], keepPlanner.groups, 'id');
+            newPlanner.activities = keepPlanner.activities;
+            //
+            updatedStudentData.planner.groups = refreshPlannerList(updatedStudentData.planner.groups, item);
+        } else if( type === 'ACTIVITY' ){
+            newPlanner.activities = unionBy([item], keepPlanner.activities, 'id');
+            newPlanner.groups = keepPlanner.groups;
+            //
+            updatedStudentData.planner.activities = refreshPlannerList(updatedStudentData.planner.activities, item);
+        }
+        // FIXME: Corregir la informacion duplicada en el plannerData
+        const newPlannerData: IDays = splitItems(updatedStudentData.planner);
+        setStudentData( updatedStudentData );
+        setPlannerData( newPlannerData );
+        setPlannerItem( newPlanner );
+    }
+    const handleSavePlanner = async () => {
+        handleOpenLoading();
+        // @ts-ignore
+        const { data } = await updatePlanner({variables: {id: studentData.planner.id}});
+        const newStudentData: IStudent = {...studentData};
+        newStudentData.planner = data.updatePlanner;
+        setStudentData(newStudentData);
+        // @ts-ignore
+        const newPlannerData: IDays = splitItems(newStudentData.planner);
+        setPlannerData(newPlannerData);
+        setLoading(false);
+    }
+
+    const handleCreateActivity = async ( activity: IActivity ) => {
+        if ( activity ) {
+            const { data } = await updateActivityStudent( {
+                variables: { idStudent: studentData.id, idActivity: activity.id }
+            } );
+            setStudentData(get(data, 'updateStudent'));
+            setLoading( false );
+        }
+    }
+
+    if( studentData ){
+        return (
+            <div>
+                <Main>
+                    <Menu
+                        studentData={ studentData }
+                        handleKeepPlanner={
+                            (item: any, type: string) => handleKeepPlanner(item, type)
+                        }
+                    />
+                    <Fab color="secondary" aria-label="save" className={classes.marginSave} onClick={handleSavePlanner}>
+                        <Icon>save</Icon>
+                    </Fab>
+                    <Fab color="secondary" aria-label="add" className={classes.marginAdd} onClick={handleOpen}>
+                        <Icon>add</Icon>
+                    </Fab>
+                    <main className={classes.content}>
+                        <div className={classes.appBarSpacer}>
+                            <Container maxWidth="lg" className={classes.container}>
+                                <Workspace plannerData={plannerData}/>
+                            </Container>
+                            <Modal
+                                aria-labelledby="transition-modal-title"
+                                aria-describedby="transition-modal-description"
+                                className={classes.modal}
+                                open={open}
+                                onClose={handleClose}
+                                closeAfterTransition
+                                BackdropComponent={Backdrop}
+                                BackdropProps={{
+                                    timeout: 500,
+                                }}
+                            >
+                                <Fade in={open}>
+                                    <div className={classes.modalPaper}>
+                                        <FormActivity
+                                            handleActivityClose={() => handleClose()}
+                                            handleActivityOpenLoading={() => handleOpenLoading()}
+                                            handleCreateActivity={(activity: IActivity) => handleCreateActivity(activity)}
+                                            user={studentData}
+                                        />
+                                    </div>
+                                </Fade>
+                            </Modal>
+                            <Modal
+                                aria-labelledby="loading-title"
+                                aria-describedby="loading-description"
+                                className={classes.modal}
+                                open={loading}
+                                closeAfterTransition
+                                BackdropComponent={Backdrop}
+                                BackdropProps={{
+                                    timeout: 500,
+                                }}
+                            >
+                                <Fade
+                                    in={loading}
+                                    style={{
+                                        transitionDelay: loading ? '800ms' : '0ms',
+                                    }}
+                                    unmountOnExit
+                                >
+                                    <div className={classes.loader}>
+                                        <CircularProgress color="secondary" size="5rem"/>
+                                    </div>
+                                </Fade>
+                            </Modal>
+                        </div>
+                    </main>
+                </Main>
+            </div>
+        )
+    }
+    return <div></div>
 }
 
-export default Planner;
+export default Planner
