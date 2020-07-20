@@ -4,23 +4,27 @@ import { NextPage, NextPageContext } from 'next'
 import Planner from '../components/Planner';
 import withData from "../plugins/apollo";
 import { parseCookies } from '../utils/cookies';
+import { isEmpty, get } from "lodash";
+import {CookieProps} from "../utils/interfaces";
 
 const LoginPage = dynamic( () => import('./login') );
 
-interface Props {
-    loggedStudent: string;
-}
-
-const Index: NextPage<Props> = ( { loggedStudent }: Props ) => {
-    if( !loggedStudent ) {
+const Index: NextPage<CookieProps | undefined> = ( { id, code, name }: CookieProps ) => {
+    if( isEmpty(id) || isEmpty(code) ) {
         return <LoginPage />;
     }
-    return <Planner />
+    return <Planner id={id} code={code} name={name}/>
 }
 
 Index.getInitialProps = async ( { req }: NextPageContext ) => {
-    const cookies = parseCookies( req );
-    return { loggedStudent: cookies.studentId };
+    try {
+        const cookies = parseCookies( req );
+        const student: CookieProps =  JSON.parse( cookies.student );
+        console.log( student );
+        return student;
+    } catch (e) {
+        return { id: undefined }
+    }
 }
 
 export default withData ( Index );

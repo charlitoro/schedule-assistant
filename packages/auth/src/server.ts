@@ -1,10 +1,19 @@
 import * as express from 'express';
+import * as cors from "cors";
 import * as bodyParser from "body-parser";
 import { authSession } from "./plugins/authSession";
 
 const server = express();
-const port = 3000;
+const port = 5000;
+const options:cors.CorsOptions = {
+    allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "X-Access-Token", "Authorization"],
+    credentials: true,
+    methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
+    origin: 'http://next.charli.com',
+    preflightContinue: false
+};
 
+server.use(cors(options));
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.post( '/login', authSession );

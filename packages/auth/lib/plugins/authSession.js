@@ -58,7 +58,7 @@ var getUser = function (origin, userLogin, clientId) { return __awaiter(void 0, 
             case 1:
                 response = _a.sent();
                 if (lodash_1.get(response, 'errors')) {
-                    throw new Error('Student not found');
+                    throw { statusCode: 404, message: 'Student not found' };
                 }
                 return [2, lodash_1.get(response, 'data.student')];
         }
@@ -84,12 +84,10 @@ exports.authSession = function (req, res) { return __awaiter(void 0, void 0, voi
                 return [4, getUser(origin_1, studentLogin, clientId)];
             case 2:
                 student = _a.sent();
-                console.log(student);
                 isValid = bcrypt_1.compareSync(studentLogin.password, student.password);
-                console.log(isValid);
                 if (isValid == false) {
                     statusResponse.statusCode = 404;
-                    statusResponse.message = 'Student not found';
+                    statusResponse.message = 'Incorrect password';
                     throw statusResponse;
                 }
                 res.status(200).json(lodash_1.omit(student, ['password']));
@@ -97,7 +95,7 @@ exports.authSession = function (req, res) { return __awaiter(void 0, void 0, voi
             case 3:
                 error_1 = _a.sent();
                 console.log(error_1.message);
-                res.status(statusResponse.statusCode).send(statusResponse.message);
+                res.status(error_1.statusCode).send(error_1.message);
                 return [3, 4];
             case 4: return [2];
         }

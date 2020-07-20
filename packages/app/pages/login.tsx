@@ -1,5 +1,6 @@
-import React from 'react';
-import { NextPage } from 'next'
+import React, { useState, useEffect } from 'react';
+import dynamic from "next/dynamic";
+import Cookie from "js-cookie";
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,6 +14,14 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { isEmpty, get } from 'lodash';
+import fetch from 'node-fetch';
+import { AUTH_SERVER, CLIENT_ID } from '../utils/constants';
+import {NextPage} from "next";
+
+Cookie.set('student', {});
+
+const Index = dynamic( () => import('./index') );
 
 function Copyright() {
     return (
@@ -47,13 +56,54 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-interface Props {
-    test?: boolean;
-}
-
-const SignIn:NextPage<Props> = ( { test }: Props ) => {
+const SignIn:NextPage = ( ) => {
     const classes = useStyles();
+    const [code, setCode] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('' );
+    const [logged, setToggleLogin] = useState( false );
+    const [student, setStudent] = useState({})
 
+    // useEffect( () => {
+    //     Cookie.set("student", JSON.stringify( student ))
+    // }, [student]);
+
+    const submitOnClick = async() => {
+        if( !isEmpty(code) && !isEmpty(password) ) {
+            try {
+                const student = await fetch( AUTH_SERVER, {
+                    method: 'POST',
+                    body: JSON.stringify( { code, password } ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `client_id ${CLIENT_ID}`,
+                        'Origin': 'http://next.charli.com'
+                    },
+                } ).then( res => {
+                    if( res.status === 404 )
+                        throw new Error('Incorrect Code or Password');
+                    else if( res.status !== 200 )
+                        throw new Error('Internal server error');
+                    return res.json();
+                } );
+                Cookie.set("student", JSON.stringify( student ))
+                setStudent( student );
+                setToggleLogin( true );
+            } catch (e) {
+                console.log( e.message );
+                setMessage( e.message );
+            }
+        } else {
+            //TODO: Mostrar notificacion
+        }
+    }
+    const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => { setCode(event.target.value) };
+    const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => { setPassword(event.target.value) };
+
+    if( logged ) {
+        return <Index />
+    }
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -75,6 +125,7 @@ const SignIn:NextPage<Props> = ( { test }: Props ) => {
                         name="code"
                         autoComplete="code"
                         autoFocus
+                        onChange={handleCodeChange}
                     />
                     <TextField
                         variant="outlined"
@@ -86,23 +137,24 @@ const SignIn:NextPage<Props> = ( { test }: Props ) => {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        onChange={handlePasswordChange}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label="Remember me"
                     />
                     <Button
-                        type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={submitOnClick}
                     >
                         Sign In
                     </Button>
                     <Grid container>
                         <Grid item>
-                            <Link href="#" variant="body2">
+                            <Link href="/">
                                 {"Don't have an account? Sign Up"}
                             </Link>
                         </Grid>
@@ -114,10 +166,6 @@ const SignIn:NextPage<Props> = ( { test }: Props ) => {
             </Box>
         </Container>
     );
-}
-
-SignIn.getInitialProps = async ( { req }: any ) => {
-    return { test: true }
 }
 
 export default SignIn;

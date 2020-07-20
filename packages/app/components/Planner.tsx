@@ -1,4 +1,3 @@
-import { NextPage, NextPageContext } from 'next'
 import Main from '../layouts/Main';
 import { Menu } from './Menu';
 import {
@@ -18,9 +17,9 @@ import Workspace from './Workspace';
 import React from "react";
 import { executeQuery } from '../utils/graphqlQueryRequest';
 import {queryGetUser, mutationUpdateActivityStudent, mutationUpdatePlanner} from '../utils/graphqlQueries';
-import {IActivity, IDays, IGroup, IStudent} from "../utils/interfaces";
+import {CookieProps, IActivity, IDays, IGroup, IStudent} from "../utils/interfaces";
 import {useMutation} from "@apollo/react-hooks";
-import { get, unionBy, concat, find, remove } from 'lodash';
+import { get, unionBy, remove } from 'lodash';
 import {splitItems} from "../plugins/splitItemsByHours";
 
 
@@ -84,11 +83,7 @@ const refreshPlannerList = ( list: any, item: any ) => {
     return updatedList;
 }
 
-interface Props {
-    loggedStudent?: boolean;
-}
-
-const Planner: NextPage<Props> = ({ loggedStudent }: Props) => {
+const Planner = ({ id }: CookieProps) => {
 
     const classes = useStyles();
     const [loading, setLoading] = React.useState(false);

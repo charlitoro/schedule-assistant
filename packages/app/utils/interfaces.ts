@@ -93,3 +93,9 @@ export interface IDays {
     Friday?: IHours;
     Saturday?: IHours
 }
+
+export interface CookieProps {
+    id: string | undefined;
+    code?: string | undefined;
+    name?: string | undefined;
+}
