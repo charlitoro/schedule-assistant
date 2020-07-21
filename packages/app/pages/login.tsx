@@ -67,7 +67,7 @@ const SignIn = () => {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         'Authorization': `client_id ${CLIENT_ID}`,
-                        'Origin': 'https://planner.charlitoro.com'
+                        'Origin': 'https://charlitoro.com'
                     },
                 } ).then( res => {
                     if( res.status === 404 )
