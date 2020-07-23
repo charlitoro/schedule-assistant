@@ -8,6 +8,6 @@ module.exports = withCSS({
     env:{
         API_URL: "https://rybk37gvz3.execute-api.us-east-1.amazonaws.com/prod/api",
         CLIENT_ID: "8c736a60-7cf4-11ea-8bbc-adcb39da8f47",
-        AUTH_SERVER: "http://localhost:5000/login"
+        AUTH_SERVER: "http://localhost:5000"
     }
 });
