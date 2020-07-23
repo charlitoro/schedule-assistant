@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import { genSaltSync, hashSync } from 'bcrypt';
-import {get, isUndefined, omit, set} from "lodash";
+import {get, isUndefined, set} from "lodash";
 import {API_URL, IUserSignUp, mutationCreateStudent, SALT_ROUNDS} from "../utils/commons";
 import fetch from "node-fetch";
 

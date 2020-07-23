@@ -95,7 +95,7 @@ exports.signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [4, createStudent(origin_1, clientId, studentSignUpData)];
             case 2:
                 idStudent = _a.sent();
-                res.status(200).json({ id: idStudent });
+                res.status(200).json(idStudent);
                 return [3, 4];
             case 3:
                 error_1 = _a.sent();
