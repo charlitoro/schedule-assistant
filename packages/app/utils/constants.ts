@@ -9,7 +9,7 @@ const ENUM_SUBJECT_TYPE = [
     {name: 'Humanistic', icon: "people_icon"},
     {name: 'Language', icon:"language"}
     ];
-const AUTH_SERVER = 'http://localhost:5000';
+const AUTH_SERVER = 'https://api.charlitoro.com';
 const CLIENT_ID = "8c736a60-7cf4-11ea-8bbc-adcb39da8f47";
 export {
     ENUM_DAYS,
