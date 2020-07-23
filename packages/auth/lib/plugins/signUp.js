@@ -36,34 +36,47 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.authSession = void 0;
+exports.signUp = void 0;
 var bcrypt_1 = require("bcrypt");
 var lodash_1 = require("lodash");
 var commons_1 = require("../utils/commons");
 var node_fetch_1 = require("node-fetch");
-var getUser = function (origin, userLogin, clientId) { return __awaiter(void 0, void 0, void 0, function () {
-    var response;
+var encryptPassword = function (password) { return __awaiter(void 0, void 0, void 0, function () {
+    var salt;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4, node_fetch_1["default"](commons_1.API_URL, {
-                    method: 'POST',
-                    headers: { 'Authorization': clientId, 'origin': origin },
-                    body: JSON.stringify({
-                        query: commons_1.queryAuthSession,
-                        variables: { code: userLogin.code }
-                    })
-                }).then(function (res) { return res.json(); })];
+        salt = bcrypt_1.genSaltSync(commons_1.SALT_ROUNDS);
+        return [2, bcrypt_1.hashSync(password, salt)];
+    });
+}); };
+var createStudent = function (origin, clientId, data) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, _b, response;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _a = lodash_1.set;
+                _b = [data, 'password'];
+                return [4, encryptPassword(lodash_1.get(data, 'password'))];
             case 1:
-                response = _a.sent();
+                _a.apply(void 0, _b.concat([_c.sent()]));
+                return [4, node_fetch_1["default"](commons_1.API_URL, {
+                        method: 'POST',
+                        headers: { 'Authorization': clientId, 'origin': origin },
+                        body: JSON.stringify({
+                            query: commons_1.mutationCreateStudent,
+                            variables: data
+                        })
+                    }).then(function (res) { return res.json(); })];
+            case 2:
+                response = _c.sent();
                 if (lodash_1.get(response, 'errors')) {
-                    throw { statusCode: 404, message: 'Student not found' };
+                    throw { statusCode: 400, message: 'Student was not created' };
                 }
-                return [2, lodash_1.get(response, 'data.student')];
+                return [2, lodash_1.get(response, 'data.createStudent')];
         }
     });
 }); };
-exports.authSession = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var statusResponse, clientId, origin_1, studentLogin, student, isValid, error_1;
+exports.signUp = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var statusResponse, clientId, origin_1, studentSignUpData, idStudent, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -78,17 +91,11 @@ exports.authSession = function (req, res) { return __awaiter(void 0, void 0, voi
                     statusResponse.message = 'Bad Request, not client id in headers';
                     throw statusResponse;
                 }
-                studentLogin = lodash_1.get(req, 'body');
-                return [4, getUser(origin_1, studentLogin, clientId)];
+                studentSignUpData = lodash_1.get(req, 'body');
+                return [4, createStudent(origin_1, clientId, studentSignUpData)];
             case 2:
-                student = _a.sent();
-                isValid = bcrypt_1.compareSync(studentLogin.password, student.password);
-                if (isValid == false) {
-                    statusResponse.statusCode = 404;
-                    statusResponse.message = 'Incorrect password';
-                    throw statusResponse;
-                }
-                res.status(200).json(lodash_1.omit(student, ['password']));
+                idStudent = _a.sent();
+                res.status(200).json(idStudent);
                 return [3, 4];
             case 3:
                 error_1 = _a.sent();
@@ -99,4 +106,4 @@ exports.authSession = function (req, res) { return __awaiter(void 0, void 0, voi
         }
     });
 }); };
-//# sourceMappingURL=authSession.js.map
+//# sourceMappingURL=signUp.js.map

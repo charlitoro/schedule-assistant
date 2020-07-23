@@ -1,18 +1,8 @@
 import { compareSync } from 'bcrypt';
 import { Request, Response } from 'express';
 import { get, isUndefined, omit } from 'lodash';
-import { IUserLogin } from '../utils/interfaces';
+import {API_URL, IUserLogin, queryAuthSession} from '../utils/commons';
 import fetch from 'node-fetch';
-
-const API_URL = 'https://rybk37gvz3.execute-api.us-east-1.amazonaws.com/prod/api';
-const saltRounds = 10;
-
-const queryAuthSession =`
-query ($code: String){
-  student(where:{code: $code}){
-    id code name password
-  }
-}`;
 
 const getUser = async ( origin: string, userLogin: IUserLogin, clientId: string ) => {
     const response = await fetch( API_URL, {
