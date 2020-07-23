@@ -60,7 +60,7 @@ const SignIn = () => {
     const submitOnClick = async() => {
         if( !isEmpty(code) && !isEmpty(password) ) {
             try {
-                const student = await fetch( AUTH_SERVER, {
+                const student = await fetch( `${AUTH_SERVER}/login`, {
                     method: 'POST',
                     body: JSON.stringify( { code, password } ),
                     headers: {
@@ -84,7 +84,7 @@ const SignIn = () => {
                 handleClickAlert(e.message);
             }
         } else {
-            //TODO: Mostrar notificacion
+            handleClickAlert( "Error: All field are required" );
         }
     }
     const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => { setCode(event.target.value) };
@@ -151,7 +151,7 @@ const SignIn = () => {
                     </Button>
                     <Grid container>
                         <Grid item>
-                            <Link href="/">
+                            <Link href="/sign-up">
                                 {"Don't have an account? Sign Up"}
                             </Link>
                         </Grid>
