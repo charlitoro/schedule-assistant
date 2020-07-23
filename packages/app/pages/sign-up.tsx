@@ -69,7 +69,7 @@ export default function SignUp() {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         'Authorization': `client_id ${CLIENT_ID}`,
-                        'Origin': 'http://next.charli.com'
+                        'Origin': 'https://planner.charlitoro.com'
                     },
                 } ).then( res => {
                     if( res.status === 400 )
