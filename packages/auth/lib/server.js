@@ -4,6 +4,7 @@ var express = require("express");
 var cors = require("cors");
 var bodyParser = require("body-parser");
 var authSession_1 = require("./plugins/authSession");
+var signUp_1 = require("./plugins/signUp");
 var server = express();
 var port = 5000;
 var options = {
@@ -17,6 +18,7 @@ server.use(cors(options));
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.post('/login', authSession_1.authSession);
+server.post('/sign-up', signUp_1.signUp);
 server.listen(port, function () {
     console.log("server started at http://localhost:" + port);
 });
